@@ -229,7 +229,9 @@ namespace Arcade
         /// Takes the given <paramref name="message"/> and appends periods (.) to the end to create a loading animation
         /// </summary>
         /// <param name="message">The initial <paramref name="message"/> to animate</param>
-        public DotAnimation(string message, string endMessage = null)
+        /// <param name="endMessage">The message to display when <see cref="DotAnimation.End"/> is called</param>
+        /// <param name="consoleColor">The color of the text in the animation</param>
+        public DotAnimation(string message, string endMessage = null, string consoleColor = null)
         {
             this.ENDMESSAGE = endMessage;
             this.MESSAGE = message;
@@ -238,9 +240,11 @@ namespace Arcade
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write(this.MESSAGE);
 
+                if (consoleColor != null)
+                    Arcade.ConsoleColors.Set(consoleColor);
+
+                Console.Write(this.MESSAGE);
                 while (true)
                 {
                     Console.Write($"\r{this.MESSAGE} .");
@@ -262,22 +266,37 @@ namespace Arcade
         /// Ends this <see cref="DotAnimation"/>
         /// </summary>
         /// <param name="endMessage">The phrase to append to the end of the <paramref name="message"/> when <see cref="DotAnimation.End"/> is called</param>
-        public void End(string endMessage)
+        /// <param name="consoleColor">The color of the <see cref="DotAnimation.ENDMESSAGE"/> in the animation</param>
+        public void End(string endMessage, string consoleColor = null)
         {
             this.END = true;
-            Console.Write($"\r{this.MESSAGE} ... {endMessage}\n");
+
+            Console.Write($"\r{this.MESSAGE} ... ");
+            
+            if (consoleColor != null)
+                Arcade.ConsoleColors.Set(consoleColor);
+
+            Console.WriteLine(endMessage);
+            Arcade.ConsoleColors.SetToPrevious();
         }
 
         /// <summary>
         /// Ends this <see cref="DotAnimation"/>
         /// </summary>
-        public void End()
+        /// <param name="consoleColor">The color of the <see cref="DotAnimation.ENDMESSAGE"/> in the animation</param>
+        public void End(string consoleColor = null)
         {
+            this.END = true;
             if (this.ENDMESSAGE == null)
                 throw new Exception("No <endMessage> given. Call End() with an <endMessage>, or manually change the <endMessage> property with myDotAnimation.ENDMESSAGE = \"my end message\"");
-            this.END = true;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($"\r{this.MESSAGE} ... {this.ENDMESSAGE}\n");
+
+            Console.Write($"\r{this.MESSAGE} ... ");
+
+            if (consoleColor != null)
+                Arcade.ConsoleColors.Set(consoleColor);
+
+            Console.WriteLine(this.ENDMESSAGE);
+            Arcade.ConsoleColors.SetToPrevious();
         }
 
     }
