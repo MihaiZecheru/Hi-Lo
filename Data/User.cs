@@ -34,21 +34,23 @@ namespace Arcade
         }
 
         /// <summary>
-        /// Packages the user into a formatted string-JSON element
-        /// </summary>
-        /// <returns></returns>
-        public string ToString()
-        {
-            string s = "    ";
-            return $"{{\n{s}\"id\": {this.id}\n{s}\"username\": \"{this.name}\"\n{s}\"password\": \"{this.password}\"\n{s}\"balance\": {this.balance}\n}}";
-        }
-
-        /// <summary>
         /// Prints the <see cref="User"/> to the console as a formatted string-JSON element 
         /// </summary>
         public void Print()
         {
-            Console.WriteLine(this.ToString());
+            string s = "   ";
+            Arcade.ConsoleColors.ChangeDefaultColor("cyan");
+            Arcade.ConsoleColors.Reset();
+
+            Console.Write($"{{\n{s}\"id\": ");         Arcade.ConsoleColors.Set("magenta");
+            Console.Write(this.id);                    Arcade.ConsoleColors.Reset();
+            Console.Write($"\n{s}\"username\": \"");   Arcade.ConsoleColors.Set("magenta");
+            Console.Write(this.name);                  Arcade.ConsoleColors.Reset();
+            Console.Write($"\"\n{s}\"password\": \""); Arcade.ConsoleColors.Set("magenta");
+            Console.Write(this.password);              Arcade.ConsoleColors.Reset();
+            Console.Write($"\"\n{s}\"balance\": ");    Arcade.ConsoleColors.Set("magenta");
+            Console.Write(this.balance);               Arcade.ConsoleColors.Reset();
+            Console.WriteLine("\n}");
         }
 
         /// <summary>
@@ -118,11 +120,11 @@ namespace Arcade
                     Arcade.ConsoleColors.Set("cyan");
                     Console.Write($"\n{dl}\n\nUsername: ");
                     Arcade.ConsoleColors.Set("magenta");
-                    string username = Console.ReadLine();
+                    string username = Console.ReadLine().Trim(' ');
                     Arcade.ConsoleColors.Set("cyan");
                     Console.Write("Password: ");
                     Arcade.ConsoleColors.Set("magenta");
-                    string password = Console.ReadLine();
+                    string password = Console.ReadLine().Trim(' ');
 
                     Console.Write("\n");
 
@@ -172,12 +174,12 @@ namespace Arcade
                     Console.WriteLine($"{dl}\n\n{space}Sign Up\n");
                     Console.Write($"{dl}\n\nCreate Your Username: ");
                     Arcade.ConsoleColors.Set("magenta");
-                    username = Console.ReadLine();
+                    username = Console.ReadLine().Trim(' ');
 
                     Arcade.ConsoleColors.Set("cyan");
                     Console.Write($"\n{dl}\n\nDo you want to choose a different username? (y/n): ");
                     Arcade.ConsoleColors.Set("magenta");
-                    string response = Console.ReadLine();
+                    string response = Console.ReadLine().Trim(' ');
                     if (response == "y" || response == "yes")
                         continue;
 
@@ -233,11 +235,18 @@ namespace Arcade
                 Console.WriteLine($"\n{dl}\n");
 
                 ConsoleColors.Reset();
-                User user = await Arcade.Database.GetUser(8);
-                return user;
+                return await Arcade.Database.CreateUser(username, password, 375);
             }
         }
 
+        /// <summary>
+        /// Ask the user if they want to sign-in to an existing account, or sign-up for an Arcade account
+        /// </summary>
+        /// <returns>
+        /// <see cref="int"/> 1 or 2.<br></br>
+        /// 1 if the user wants to sign-in to an existing account
+        /// <br></br>2 if the user wants to sign-up for an Arcade account
+        /// </returns>
         private static int GetSignInOrSignUpOption()
         {
             /* Message that will be displayed:
@@ -282,7 +291,7 @@ namespace Arcade
                 Console.Write("to Sign-Up for an Arcade account. Choose an option: ");
                 Arcade.ConsoleColors.Set("magenta");
 
-                string response = Console.ReadLine();
+                string response = Console.ReadLine().Trim(' ');
                 passed = int.TryParse(response, out option);
                 Arcade.ConsoleColors.Set("cyan");
                 if (!passed) Console.WriteLine("\n" + dl + "\n");
