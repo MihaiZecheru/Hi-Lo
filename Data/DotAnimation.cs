@@ -61,7 +61,6 @@
                 Arcade.ConsoleColors.Set(consoleColor);
 
             Console.WriteLine(endMessage);
-            Arcade.ConsoleColors.SetToPrevious();
         }
 
         /// <summary>
@@ -81,7 +80,6 @@
                 Arcade.ConsoleColors.Set(consoleColor);
 
             Console.WriteLine(this.ENDMESSAGE);
-            Arcade.ConsoleColors.SetToPrevious();
         }
     }
 }
