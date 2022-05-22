@@ -230,7 +230,7 @@ namespace Arcade
         /// </summary>
         /// <param name="message">The initial <paramref name="message"/> to animate</param>
         /// <param name="endMessage">The message to display when <see cref="DotAnimation.End"/> is called</param>
-        /// <param name="consoleColor">The color of the text in the animation</param>
+        /// <param name="consoleColor">The color of <paramref name="endMessage"/> in the animation</param>
         public DotAnimation(string message, string endMessage = null, string consoleColor = null)
         {
             this.ENDMESSAGE = endMessage;
@@ -266,7 +266,7 @@ namespace Arcade
         /// Ends this <see cref="DotAnimation"/>
         /// </summary>
         /// <param name="endMessage">The phrase to append to the end of the <paramref name="message"/> when <see cref="DotAnimation.End"/> is called</param>
-        /// <param name="consoleColor">The color of the <see cref="DotAnimation.ENDMESSAGE"/> in the animation</param>
+        /// <param name="consoleColor">The color of the <paramref name="endMessage"/> in the animation</param>
         public void End(string endMessage, string consoleColor = null)
         {
             this.END = true;
