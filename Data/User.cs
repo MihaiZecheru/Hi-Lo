@@ -85,5 +85,33 @@ namespace Arcade
             this.balance -= amount;
             return await Arcade.Database.UpdateUser(this);
         }
+
+        public static async Task<User> SignIn()
+        {
+            string dl = "-------------------------------------------------------------";
+            string space = "                            ";
+
+            
+            Console.WriteLine($"{dl}\n\n{space}Sign In");
+
+            int id = 0;
+            do
+            {
+                Console.Write($"\n{dl}\n\nUsername: ");
+                string username = Console.ReadLine();
+                Console.Write("Password: ");
+                string password = Console.ReadLine();
+
+                DotAnimation dotAnimationChecking = new DotAnimation("Looking for your account");
+                id = await Arcade.Database.DoesUserExist(username, password);
+                dotAnimationChecking.End(id > 0 ? "Found it!" : "This account does not exist");
+            } while (id == 0);
+
+            DotAnimation dotAnimationGetting = new DotAnimation("Signing in", "Done!\n\n" + dl + "\n");
+            User user = await Arcade.Database.GetUser(id);
+            dotAnimationGetting.End();
+            //Console.Clear();
+            return user;
+        }
     }
 }

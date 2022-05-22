@@ -92,7 +92,8 @@ namespace Arcade
         /// <returns><see cref="Arcade.User"/></returns>
         public static async Task<User> CreateUser(string username, string password, double balance)
         {
-            DotAnimation DotAnimation = new DotAnimation("Creating Your Account");
+            DotAnimation dotAnimation = new DotAnimation("Creating Your Account");
+            dotAnimation.ENDMESSAGE = "Done!";
 
             User user = new User(await GetNextId(), username, password, balance);
             HttpContent body = new FormUrlEncodedContent(user.GetAsKVpairs());
@@ -110,7 +111,7 @@ namespace Arcade
                         string content = await responseContent.ReadAsStringAsync();
                     }
 
-                    DotAnimation.End();
+                    dotAnimation.End();
                     return user;
                 }
             }
@@ -125,58 +126,10 @@ namespace Arcade
         /// <returns><see cref="Arcade.User"/></returns>
         public static async Task<User> CreateUser(string username, double balance)
         {
-            /* Ask user to create a password */
+            // Ask user to create a password 
+            string password = CreatePassword();
 
-            bool firstTime = true;
-            string dl = "-------------------------------------------------------------";
-            string password = "placeholder1";
-            string confirm_password = "placeholder2";
-            
-            do
-            {
-                if (firstTime)
-                {
-                    Console.WriteLine($"{dl}\n\nCreate a password\n\n{dl}\n");
-                    firstTime = false;
-                }
-                else if (password != confirm_password)
-                    Console.Write($"{dl}\n\nPasswords must match\n\n{dl}\n\n");
-                else if (password == "")
-                    Console.Write($"{dl}\n\nYour password cannot be \"\"\n\n{dl}\n\n");
-                else if (password.Length < 8)
-                    Console.Write($"{dl}\n\nYour password must be 8 characters or longer\n\n{dl}\n\n");
-
-                Console.Write("Password: ");
-                password = Console.ReadLine().Trim(' ');
-                Console.Write("\nConfirm: ");
-                confirm_password = Console.ReadLine().Trim(' ');
-                Console.Write("\n");
-            } while(password != confirm_password || password == "" || password.Length < 8);
-                
-            /* Create the account */
-
-            DotAnimation DotAnimation = new DotAnimation("Creating Your Account");
-
-            User user = new User(await GetNextId(), username, password, balance);
-            HttpContent body = new FormUrlEncodedContent(user.GetAsKVpairs());
-
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("X-API-ID", api_id);
-                client.DefaultRequestHeaders.Add("X-CLIENT-TOKEN", api_key);
-
-                using (HttpResponseMessage response = await client.PostAsync(api_url, body))
-                {
-                    response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                    using (HttpContent responseContent = response.Content)
-                    {
-                        string content = await responseContent.ReadAsStringAsync();
-                    }
-
-                    DotAnimation.End();
-                    return user;
-                }
-            }
+            return await CreateUser(username, password, balance);
         }
 
         /// <summary>
@@ -205,6 +158,62 @@ namespace Arcade
                 }
             }
         }
+
+        private static string CreatePassword()
+        {
+            bool firstTime = true;
+            string dl = "-------------------------------------------------------------";
+            string password = "placeholder1";
+            string confirm_password = "placeholder2";
+
+            do
+            {
+                if (firstTime)
+                {
+                    Console.WriteLine($"{dl}\n\nCreate a password\n\n{dl}\n");
+                    firstTime = false;
+                }
+                else if (password != confirm_password)
+                    Console.Write($"{dl}\n\nPasswords must match\n\n{dl}\n\n");
+                else if (password == "")
+                    Console.Write($"{dl}\n\nYour password cannot be \"\"\n\n{dl}\n\n");
+                else if (password.Length < 8)
+                    Console.Write($"{dl}\n\nYour password must be 8 characters or longer\n\n{dl}\n\n");
+
+                Console.Write("Password: ");
+                password = Console.ReadLine().Trim(' ');
+                Console.Write("\nConfirm: ");
+                confirm_password = Console.ReadLine().Trim(' ');
+                Console.Write("\n");
+            } while (password != confirm_password || password == "" || password.Length < 8);
+
+            return password;
+        }
+
+        public static async Task<int> DoesUserExist(string username, string password)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("X-API-ID", api_id);
+                client.DefaultRequestHeaders.Add("X-CLIENT-TOKEN", api_key);
+                using (HttpResponseMessage response = await client.GetAsync(api_url + $"?username={username}&password={password}&page_size=1&page=1"))
+                {
+                    response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    using (HttpContent responseContent = response.Content)
+                    {
+                        string content = await responseContent.ReadAsStringAsync();
+                        Dictionary<string, object> _db = JsonConvert.DeserializeObject<Dictionary<string, object>>(content);
+                        Newtonsoft.Json.Linq.JArray _data = (Newtonsoft.Json.Linq.JArray)_db["data"];
+                        List<Dictionary<string, object>> users = _data.ToObject<List<Dictionary<string, object>>>();
+
+                        if (users.Count == 0) return 0;                        
+
+                        Dictionary<string, object> user = users[0];
+                        return Convert.ToInt32(user["id"]);
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -213,33 +222,36 @@ namespace Arcade
     internal class DotAnimation
     {
         private bool END { get; set; }
-        private string LINE { get; set; }
+        private string MESSAGE { get; set; }
+        public string ENDMESSAGE { get; set; }
 
         /// <summary>
-        /// Takes the given <paramref name="line"/> and appends periods (.) to the end to create a loading animation
+        /// Takes the given <paramref name="message"/> and appends periods (.) to the end to create a loading animation
         /// </summary>
-        /// <param name="line"></param>
-        public DotAnimation(string line)
+        /// <param name="message">The initial <paramref name="message"/> to animate</param>
+        public DotAnimation(string message, string endMessage = null)
         {
-            this.LINE = line;
+            this.ENDMESSAGE = endMessage;
+            this.MESSAGE = message;
             this.END = false;
 
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                Console.Write(line);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(this.MESSAGE);
 
                 while (true)
                 {
-                    Console.Write($"\r{line} .");
+                    Console.Write($"\r{this.MESSAGE} .");
                     if (END) return;
                     Thread.Sleep(350);
                     if (END) return;
-                    Console.Write($"\r{line} ..");
+                    Console.Write($"\r{this.MESSAGE} ..");
                     if (END) return;
                     Thread.Sleep(350);
                     if (END) return;
-                    Console.Write($"\r{line} ...");
+                    Console.Write($"\r{this.MESSAGE} ...");
                     if (END) return;
                     Thread.Sleep(350);
                 }
@@ -249,10 +261,24 @@ namespace Arcade
         /// <summary>
         /// Ends this <see cref="DotAnimation"/>
         /// </summary>
-        public void End()
+        /// <param name="endMessage">The phrase to append to the end of the <paramref name="message"/> when <see cref="DotAnimation.End"/> is called</param>
+        public void End(string endMessage)
         {
             this.END = true;
-            Console.Write($"\r{this.LINE} ... Done!\n");
+            Console.Write($"\r{this.MESSAGE} ... {endMessage}\n");
         }
+
+        /// <summary>
+        /// Ends this <see cref="DotAnimation"/>
+        /// </summary>
+        public void End()
+        {
+            if (this.ENDMESSAGE == null)
+                throw new Exception("No <endMessage> given. Call End() with an <endMessage>, or manually change the <endMessage> property with myDotAnimation.ENDMESSAGE = \"my end message\"");
+            this.END = true;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"\r{this.MESSAGE} ... {this.ENDMESSAGE}\n");
+        }
+
     }
 }
