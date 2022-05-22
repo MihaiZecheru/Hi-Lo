@@ -90,7 +90,7 @@ namespace Arcade
         /// <returns><see cref="Arcade.User"/></returns>
         public static async Task<User> CreateUser(string username, string password, double balance)
         {
-            DotAnimation dotAnimation = new DotAnimation("Creating Your Account");
+            DotAnimation dotAnimation = new DotAnimation(message: "Creating Your Arcade Account", endMessage: "Done!", messageConsoleColor: "cyan", endMessageConsoleColor: "magenta");
 
             User user = new User(await GetNextId(), username, password, balance);
             HttpContent body = new FormUrlEncodedContent(user.GetAsKVpairs());
@@ -109,7 +109,8 @@ namespace Arcade
                     }
 
                     Thread.Sleep(1000);
-                    dotAnimation.End("Done!", "magenta");
+                    dotAnimation.End();
+                    Thread.Sleep(500);
                     return user;
                 }
             }
