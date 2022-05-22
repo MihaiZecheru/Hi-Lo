@@ -42,7 +42,6 @@ namespace Arcade
             if (!Colors.Keys.Contains(color))
                 throw new Exception(color + " does not exist\n\nExisting colors: black, darkblue, darkgreen, darkcyan, darkred, darkmagenta, darkyellow, darkgray, gray, blue, green, cyan, red, magenta, yellow, white");
 
-            if (Colors[color] == CurrentColor) return;
             ConsoleColors.CurrentColor = Colors[color];
             Console.ForegroundColor = ConsoleColors.CurrentColor;
         }
