@@ -83,9 +83,7 @@ namespace Arcade
         }
 
         /// <summary>
-        /// Creates a new <see cref="Arcade.User"/>, then posts it to the database<br></br><br></br>
-        /// If a password is not provided, the <see cref="User"/> will be prompted to create one
-        /// </summary>
+        /// Creates a new <see cref="Arcade.User"/>, then posts it to the database</summary>
         /// <param name="username">user name</param>
         /// <param name="password">user password</param>
         /// <param name="balance">user balance</param>
@@ -93,7 +91,6 @@ namespace Arcade
         public static async Task<User> CreateUser(string username, string password, double balance)
         {
             DotAnimation dotAnimation = new DotAnimation("Creating Your Account");
-            dotAnimation.ENDMESSAGE = "Done!";
 
             User user = new User(await GetNextId(), username, password, balance);
             HttpContent body = new FormUrlEncodedContent(user.GetAsKVpairs());
@@ -111,25 +108,11 @@ namespace Arcade
                         string content = await responseContent.ReadAsStringAsync();
                     }
 
-                    dotAnimation.End();
+                    Thread.Sleep(1000);
+                    dotAnimation.End("Done!", "magenta");
                     return user;
                 }
             }
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="Arcade.User"/>, then posts it to the database<br></br><br></br>
-        /// If a password is not provided, the <see cref="User"/> will be prompted to create one
-        /// </summary>
-        /// <param name="username">user name</param>
-        /// <param name="balance">user balance</param>
-        /// <returns><see cref="Arcade.User"/></returns>
-        public static async Task<User> CreateUser(string username, double balance)
-        {
-            // Ask user to create a password 
-            string password = CreatePassword();
-
-            return await CreateUser(username, password, balance);
         }
 
         /// <summary>
@@ -157,37 +140,6 @@ namespace Arcade
                     return user;
                 }
             }
-        }
-
-        private static string CreatePassword()
-        {
-            bool firstTime = true;
-            string dl = "-------------------------------------------------------------";
-            string password = "placeholder1";
-            string confirm_password = "placeholder2";
-
-            do
-            {
-                if (firstTime)
-                {
-                    Console.WriteLine($"{dl}\n\nCreate a password\n\n{dl}\n");
-                    firstTime = false;
-                }
-                else if (password != confirm_password)
-                    Console.Write($"{dl}\n\nPasswords must match\n\n{dl}\n\n");
-                else if (password == "")
-                    Console.Write($"{dl}\n\nYour password cannot be \"\"\n\n{dl}\n\n");
-                else if (password.Length < 8)
-                    Console.Write($"{dl}\n\nYour password must be 8 characters or longer\n\n{dl}\n\n");
-
-                Console.Write("Password: ");
-                password = Console.ReadLine().Trim(' ');
-                Console.Write("\nConfirm: ");
-                confirm_password = Console.ReadLine().Trim(' ');
-                Console.Write("\n");
-            } while (password != confirm_password || password == "" || password.Length < 8);
-
-            return password;
         }
 
         public static async Task<int> DoesUserExist(string username, string password)
