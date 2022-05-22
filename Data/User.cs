@@ -39,17 +39,16 @@ namespace Arcade
         public void Print()
         {
             string s = "   ";
-            Arcade.ConsoleColors.ChangeDefaultColor("cyan");
-            Arcade.ConsoleColors.Reset();
 
+            Arcade.ConsoleColors.Set("cyan");
             Console.Write($"{{\n{s}\"id\": ");         Arcade.ConsoleColors.Set("magenta");
-            Console.Write(this.id);                    Arcade.ConsoleColors.Reset();
+            Console.Write(this.id);                    Arcade.ConsoleColors.Set("cyan");
             Console.Write($"\n{s}\"username\": \"");   Arcade.ConsoleColors.Set("magenta");
-            Console.Write(this.name);                  Arcade.ConsoleColors.Reset();
+            Console.Write(this.name);                  Arcade.ConsoleColors.Set("cyan");
             Console.Write($"\"\n{s}\"password\": \""); Arcade.ConsoleColors.Set("magenta");
-            Console.Write(this.password);              Arcade.ConsoleColors.Reset();
+            Console.Write(this.password);              Arcade.ConsoleColors.Set("cyan");
             Console.Write($"\"\n{s}\"balance\": ");    Arcade.ConsoleColors.Set("magenta");
-            Console.Write(this.balance);               Arcade.ConsoleColors.Reset();
+            Console.Write(this.balance);               Arcade.ConsoleColors.Set("cyan");
             Console.WriteLine("\n}");
         }
 
@@ -90,6 +89,11 @@ namespace Arcade
             return await Arcade.Database.UpdateUser(this);
         }
 
+        /// <summary>
+        /// Prompt the user to either Sign-In to an existing account or Sign-Up for an <see cref="Arcade"/> account<br></br><br></br>
+        /// The user will then either sign-in or sign-up, and the <see cref="User"/> they made/signed-in to will be returned
+        /// </summary>
+        /// <returns>the <see cref="User"/> they made/signed-in to</returns>
         public static async Task<User> SignIn()
         {
             string space = "";
@@ -109,7 +113,7 @@ namespace Arcade
                 {
                     if (!first)
                     {
-                        Thread.Sleep(2000);
+                        Thread.Sleep(1000);
                         Console.Clear();
                     }
                     first = false;
@@ -126,45 +130,45 @@ namespace Arcade
 
                     Console.Write("\n");
 
-                    Arcade.ConsoleColors.Set("cyan");
-                    DotAnimation dotAnimationChecking = new DotAnimation("Looking for your account");
+                    DotAnimation dotAnimationChecking = new DotAnimation(message: "Looking for your account", messageConsoleColor: "cyan") ;
                     id = await Arcade.Database.DoesUserExist(username, password);
 
                     if (id == 0)
                     {
-                        dotAnimationChecking.End("This account does not exist", "darkred");
+                        dotAnimationChecking.End(endMessage: "This account does not exist", endMessageConsoleColor: "darkred");
                         Arcade.ConsoleColors.Set("cyan");
-                        Console.WriteLine('\n' + dl);
+                        Console.WriteLine($"\n{dl}");
                     }
                     else
                     {
-                        dotAnimationChecking.End("Found it!", "magenta");
+                        dotAnimationChecking.End(endMessage: "Found it!", endMessageConsoleColor: "magenta");
                         Arcade.ConsoleColors.Set("cyan");
                     }
                 } while (id == 0);
 
-                DotAnimation dotAnimationGetting = new DotAnimation("Signing in", "Done!\n");
+                DotAnimation dotAnimationGetting = new DotAnimation(message: "Signing in", endMessage: "Done!\n", messageConsoleColor: "cyan", endMessageConsoleColor: "magenta");
                 User user = await Arcade.Database.GetUser(id);
                 
                 Thread.Sleep(2000);
-                dotAnimationGetting.End(consoleColor: "magenta");
+                dotAnimationGetting.End();
+                Thread.Sleep(500);
                 
                 Arcade.ConsoleColors.Set("cyan"); Console.WriteLine(dl); Arcade.ConsoleColors.Reset();
-                Thread.Sleep(1250); Console.Clear();
+                Console.Clear();
                 return user;
             }
             else // option == 2
             {
                 bool first = true;
                 string username;
-                string password = "placeholder";
-                string confirm_password = "placeholder";
+                string password;
+                string confirm_password;
                 while (true)
                 {
                     Arcade.ConsoleColors.Set("cyan");
                     if (!first)
                     {
-                        Thread.Sleep(2000);
+                        Thread.Sleep(1000);
                         Console.Clear();
                     }
 
@@ -174,12 +178,31 @@ namespace Arcade
                     Arcade.ConsoleColors.Set("magenta");
                     username = Console.ReadLine().Trim(' ');
 
-                    Arcade.ConsoleColors.Set("cyan");
-                    Console.Write($"\n{dl}\n\nDo you want to choose a different username? (y/n): ");
-                    Arcade.ConsoleColors.Set("magenta");
-                    string response = Console.ReadLine().Trim(' ');
+                    string response;
+                    while (true)
+                    {
+                        Console.Clear(); Arcade.ConsoleColors.Set("cyan");
+
+                        // rewriting the prompt and the response to the screen after clearing the console
+                        Console.WriteLine($"{dl}\n\n{space}Sign Up\n");
+                        Console.Write($"{dl}\n\nCreate Your Username: ");
+                        Arcade.ConsoleColors.Set("magenta");
+                        Console.WriteLine(username);
+
+                        Arcade.ConsoleColors.Set("cyan");
+                        Console.Write($"\n{dl}\n\nDo you want to choose a different username? (y/n): ");
+                        Arcade.ConsoleColors.Set("magenta");
+                        response = Console.ReadLine().Trim(' ');
+                        if (new string[] { "yes", "y", "n", "no" }.Contains(response))
+                            break;
+                    }
+
                     if (response == "y" || response == "yes")
+                    {
+                        first = true;
+                        Console.Clear();
                         continue;
+                    }
 
                     Arcade.ConsoleColors.Set("cyan");
                     first = true;
@@ -191,7 +214,7 @@ namespace Arcade
 
                         if (!first)
                         {
-                            Thread.Sleep(1500);
+                            Thread.Sleep(1000);
                             Console.Clear();
                         }
 
@@ -233,7 +256,8 @@ namespace Arcade
                 Console.WriteLine($"\n{dl}\n");
 
                 ConsoleColors.Reset();
-                return await Arcade.Database.CreateUser(username, password, 375);
+                User user = await Arcade.Database.CreateUser(username, password, 375);
+                return user;
             }
         }
 
@@ -257,15 +281,10 @@ namespace Arcade
             bool passed;
             int option;
 
-            bool first = true;
             do
             {
-                if (!first)
-                {
-                    Thread.Sleep(1000);
-                    Console.Clear();
-                }
-                first = false;
+                Thread.Sleep(15);
+                Console.Clear();
 
                 Arcade.ConsoleColors.Set("cyan");
                 Console.WriteLine(dl + "\n");
@@ -291,5 +310,74 @@ namespace Arcade
             Console.Clear();
             return option;
         }
+
+        /// <summary>
+        /// Ask the user to place a bet
+        /// </summary>
+        /// <returns>the user's bet</returns>
+        public async Task<double> GetBet()
+        {
+            string s = "";
+            for (int i = 0; i < 51; i++) s += ' ';
+
+            int bet;
+            bool first = true;
+            while (true)
+            {
+                string error;
+                ConsoleColors.Set("cyan"); 
+                if (!first)
+                    Thread.Sleep(1000); Console.Clear();
+                first = false;
+                Console.WriteLine($"{dl}\n\n{s}Place Your Bet!\n\n{dl}\n");
+
+                Console.Write("Your current balance is: "); Arcade.ConsoleColors.Set("magenta");
+                Console.WriteLine(this.balance); Arcade.ConsoleColors.Set("cyan");
+                Console.Write($"Place Your Bet: "); Arcade.ConsoleColors.Set("magenta");
+                string response = Console.ReadLine();
+                bool valid = int.TryParse(response, out bet);
+                if (valid)
+                {
+                    if (bet > this.balance)
+                    {
+                        error = "You can't afford this bet!";
+                    }
+                    else
+                    {
+                        ConsoleColors.Set("cyan"); Console.WriteLine($"\n{dl}\n");
+                        Thread.Sleep(1000); Console.Clear();
+                        break;
+                    }
+                }
+                else
+                {
+                    error = "Your bet must be a number less than 9,007,199,254,740,992";
+                }
+
+                Arcade.ConsoleColors.Set("cyan");
+                Console.WriteLine($"\n{dl}\n");
+                Arcade.ConsoleColors.Set("darkred");
+                Console.WriteLine(error);
+                Arcade.ConsoleColors.Set("cyan");
+                Console.WriteLine($"\n{dl}\n");
+            }
+
+            Console.Write($"{dl}\n\nThe bet you placed was: ");
+            Arcade.ConsoleColors.Set("magenta");
+            Console.WriteLine($"{bet}\n");
+
+            DotAnimation dotAnimation = new DotAnimation(message: "Updating Balance", endMessage: $"Done!", messageConsoleColor: "cyan", endMessageConsoleColor: "magenta");
+            await this.RemoveBalance(bet);
+            Thread.Sleep(550);
+            dotAnimation.End();
+            Console.Write("\nYour balance is now: ");
+            Arcade.ConsoleColors.Set("magenta");
+            Console.Write(this.balance);
+            Arcade.ConsoleColors.Set("cyan");
+            Console.WriteLine($"\n\n{dl}\n");
+            Thread.Sleep(1000);
+            return bet;
+        }
     }
 }
+
