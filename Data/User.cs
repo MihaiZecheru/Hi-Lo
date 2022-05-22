@@ -204,6 +204,25 @@ namespace Arcade
                         continue;
                     }
 
+                    Console.Write("\n\n");
+                    DotAnimation dotAnimation = new DotAnimation(message: "Checking Username Availability", messageConsoleColor: "cyan");
+                    bool available = await Database.CheckUsernameAvailability(username);
+                    if (!available)
+                    {
+                        Thread.Sleep(500);
+                        dotAnimation.End(endMessage: "Not Available", endMessageConsoleColor: "darkred");
+                        Console.WriteLine($"\n{dl}\n");
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        dotAnimation.End(endMessage: "Available", endMessageConsoleColor: "magenta");
+                        Console.WriteLine($"\n{dl}\n");
+                        Thread.Sleep(500);
+                    }
+
                     Arcade.ConsoleColors.Set("cyan");
                     first = true;
                     Thread.Sleep(1000);
