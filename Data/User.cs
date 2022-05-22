@@ -91,26 +91,47 @@ namespace Arcade
             string dl = "-------------------------------------------------------------";
             string space = "                            ";
 
-            
+            Arcade.ConsoleColors.Set("cyan");
             Console.WriteLine($"{dl}\n\n{space}Sign In");
 
             int id = 0;
             do
             {
+                Arcade.ConsoleColors.Set("cyan");
                 Console.Write($"\n{dl}\n\nUsername: ");
+                Arcade.ConsoleColors.Set("green");
                 string username = Console.ReadLine();
+                Arcade.ConsoleColors.Set("cyan");
                 Console.Write("Password: ");
+                Arcade.ConsoleColors.Set("green");
                 string password = Console.ReadLine();
 
+                Console.Write("\n");
+
+                Arcade.ConsoleColors.Set("yellow");
                 DotAnimation dotAnimationChecking = new DotAnimation("Looking for your account");
                 id = await Arcade.Database.DoesUserExist(username, password);
-                dotAnimationChecking.End(id > 0 ? "Found it!" : "This account does not exist");
+                if (id == 0)
+                {
+                    dotAnimationChecking.End("This account does not exist", "red");
+                    Arcade.ConsoleColors.Set("yellow");
+                }
+                else
+                {
+                    dotAnimationChecking.End("Found it!", "green");
+                    Arcade.ConsoleColors.Set("yellow");
+                }
             } while (id == 0);
 
-            DotAnimation dotAnimationGetting = new DotAnimation("Signing in", "Done!\n\n" + dl + "\n");
+            DotAnimation dotAnimationGetting = new DotAnimation("Signing in", "Done!\n");
             User user = await Arcade.Database.GetUser(id);
-            dotAnimationGetting.End();
-            //Console.Clear();
+            Thread.Sleep(3000);
+            dotAnimationGetting.End(consoleColor: "green");
+            Arcade.ConsoleColors.Set("cyan");
+            Console.WriteLine(dl);
+            Arcade.ConsoleColors.Reset();
+            Thread.Sleep(1250);
+            Console.Clear();
             return user;
         }
     }
