@@ -13,7 +13,6 @@ namespace Arcade
     {
         private static ConsoleColor DefaultColor { get; set; } = ConsoleColor.White;
         public static ConsoleColor CurrentColor { get; set; } = DefaultColor;
-        public static ConsoleColor PreviousColor { get; set; } = DefaultColor;
 
         private static Dictionary<string, ConsoleColor> Colors = new Dictionary<string, ConsoleColor>(new List<KeyValuePair<string, ConsoleColor>>()
         {
@@ -44,7 +43,6 @@ namespace Arcade
                 throw new Exception(color + " does not exist\n\nExisting colors: black, darkblue, darkgreen, darkcyan, darkred, darkmagenta, darkyellow, darkgray, gray, blue, green, cyan, red, magenta, yellow, white");
 
             if (Colors[color] == CurrentColor) return;
-            ConsoleColors.PreviousColor = ConsoleColors.CurrentColor;
             ConsoleColors.CurrentColor = Colors[color];
             Console.ForegroundColor = ConsoleColors.CurrentColor;
         }
@@ -55,16 +53,6 @@ namespace Arcade
         public static void Reset()
         {
             Console.ForegroundColor = ConsoleColors.DefaultColor;
-        }
-
-        /// <summary>
-        /// Set <see cref="Console.ForegroundColor"/> to <see cref="ConsoleColors.PreviousColor"/>
-        /// </summary>
-        public static void SetToPrevious()
-        {
-            ConsoleColors.PreviousColor = ConsoleColors.CurrentColor;
-            ConsoleColors.CurrentColor = ConsoleColors.PreviousColor;
-            Console.ForegroundColor = ConsoleColors.CurrentColor;
         }
     }
 }
