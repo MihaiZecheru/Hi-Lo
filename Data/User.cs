@@ -114,15 +114,13 @@ namespace Arcade
                     }
                     first = false;
 
-                    Arcade.ConsoleColors.Set("cyan");
-                    Console.WriteLine($"{dl}\n\n{space}Sign In");
+                    Arcade.ConsoleColors.Set("cyan"); Console.WriteLine($"{dl}\n\n{space}Sign In");
 
-                    Arcade.ConsoleColors.Set("cyan");
-                    Console.Write($"\n{dl}\n\nUsername: ");
+                    Arcade.ConsoleColors.Set("cyan"); Console.Write($"\n{dl}\n\nUsername: ");
                     Arcade.ConsoleColors.Set("magenta");
                     string username = Console.ReadLine().Trim(' ');
-                    Arcade.ConsoleColors.Set("cyan");
-                    Console.Write("Password: ");
+
+                    Arcade.ConsoleColors.Set("cyan"); Console.Write("Password: ");
                     Arcade.ConsoleColors.Set("magenta");
                     string password = Console.ReadLine().Trim(' ');
 
@@ -131,6 +129,7 @@ namespace Arcade
                     Arcade.ConsoleColors.Set("cyan");
                     DotAnimation dotAnimationChecking = new DotAnimation("Looking for your account");
                     id = await Arcade.Database.DoesUserExist(username, password);
+
                     if (id == 0)
                     {
                         dotAnimationChecking.End("This account does not exist", "darkred");
@@ -146,13 +145,12 @@ namespace Arcade
 
                 DotAnimation dotAnimationGetting = new DotAnimation("Signing in", "Done!\n");
                 User user = await Arcade.Database.GetUser(id);
+                
                 Thread.Sleep(2000);
                 dotAnimationGetting.End(consoleColor: "magenta");
-                Arcade.ConsoleColors.Set("cyan");
-                Console.WriteLine(dl);
-                Arcade.ConsoleColors.Reset();
-                Thread.Sleep(1250);
-                Console.Clear();
+                
+                Arcade.ConsoleColors.Set("cyan"); Console.WriteLine(dl); Arcade.ConsoleColors.Reset();
+                Thread.Sleep(1250); Console.Clear();
                 return user;
             }
             else // option == 2
@@ -271,25 +269,17 @@ namespace Arcade
 
                 Arcade.ConsoleColors.Set("cyan");
                 Console.WriteLine(dl + "\n");
-                Console.Write("You must either ");
-                Arcade.ConsoleColors.Set("magenta");
-                Console.Write("SIGN IN ");
-                Arcade.ConsoleColors.Set("cyan");
-                Console.Write("or ");
-                Arcade.ConsoleColors.Set("magenta");
-                Console.Write("SIGN UP ");
-                Arcade.ConsoleColors.Set("cyan");
-                Console.Write("to play this game!\n\nType ");
-                Arcade.ConsoleColors.Set("magenta");
-                Console.Write("1 ");
-                Arcade.ConsoleColors.Set("cyan");
+                
+                Console.Write("You must either ");                                     Arcade.ConsoleColors.Set("magenta");
+                Console.Write("SIGN IN ");                                             Arcade.ConsoleColors.Set("cyan");
+                Console.Write("or ");                                                  Arcade.ConsoleColors.Set("magenta");
+                Console.Write("SIGN UP ");                                             Arcade.ConsoleColors.Set("cyan");
+                Console.Write("to play this game!\n\nType ");                          Arcade.ConsoleColors.Set("magenta");
+                Console.Write("1 ");                                                   Arcade.ConsoleColors.Set("cyan");
                 Console.WriteLine("to Sign-In to an already existing account.");
-                Console.Write("Type ");
-                Arcade.ConsoleColors.Set("magenta");
-                Console.Write("2 ");
-                Arcade.ConsoleColors.Set("cyan");
-                Console.Write("to Sign-Up for an Arcade account. Choose an option: ");
-                Arcade.ConsoleColors.Set("magenta");
+                Console.Write("Type ");                                                Arcade.ConsoleColors.Set("magenta");
+                Console.Write("2 ");                                                   Arcade.ConsoleColors.Set("cyan");
+                Console.Write("to Sign-Up for an Arcade account. Choose an option: "); Arcade.ConsoleColors.Set("magenta");
 
                 string response = Console.ReadLine().Trim(' ');
                 passed = int.TryParse(response, out option);
