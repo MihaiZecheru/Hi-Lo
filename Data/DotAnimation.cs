@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="message">The initial <paramref name="message"/> to animate</param>
         /// <param name="endMessage">The message to display when <see cref="DotAnimation.End"/> is called</param>
-        /// <param name="consoleColor">The color of <paramref name="endMessage"/> in the animation</param>
+        /// <param name="consoleColor">The color of <paramref name="message"/> that's being animated</param>
         public DotAnimation(string message, string endMessage = null, string consoleColor = null)
         {
             this.ENDMESSAGE = endMessage;
@@ -24,14 +24,16 @@
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
+                Console.CursorVisible = false;
 
                 if (consoleColor != null)
                     Arcade.ConsoleColors.Set(consoleColor);
 
                 Console.Write(this.MESSAGE);
+                
                 while (true)
                 {
-                    Console.CursorVisible = false;
+                    if (END) return;
                     Console.Write($"\r{this.MESSAGE} .  ");
                     if (END) return;
                     Thread.Sleep(350);
@@ -72,7 +74,6 @@
         public void End(string consoleColor = null)
         {
             this.END = true;
-            Console.CursorVisible = true;
 
             if (this.ENDMESSAGE == null)
                 throw new Exception("No <endMessage> given. Call End() with an <endMessage>, or manually change the <endMessage> property with myDotAnimation.ENDMESSAGE = \"my end message\"");
