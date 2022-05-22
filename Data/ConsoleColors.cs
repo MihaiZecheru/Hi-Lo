@@ -11,8 +11,8 @@ namespace Arcade
     /// </summary>
     public class ConsoleColors
     {
-        private static ConsoleColor DefaultColor { get; set; } = ConsoleColor.White;
-        public static ConsoleColor CurrentColor { get; set; } = DefaultColor;
+        public static ConsoleColor DefaultColor { get; set; } = ConsoleColor.White;
+        private static ConsoleColor CurrentColor { get; set; } = DefaultColor;
 
         private static Dictionary<string, ConsoleColor> Colors = new Dictionary<string, ConsoleColor>(new List<KeyValuePair<string, ConsoleColor>>()
         {
