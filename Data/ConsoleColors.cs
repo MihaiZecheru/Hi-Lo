@@ -62,7 +62,9 @@ namespace Arcade
         /// </summary>
         public static void SetToPrevious()
         {
-            Console.ForegroundColor = ConsoleColors.PreviousColor;
+            ConsoleColors.PreviousColor = ConsoleColors.CurrentColor;
+            ConsoleColors.CurrentColor = ConsoleColors.PreviousColor;
+            Console.ForegroundColor = ConsoleColors.CurrentColor;
         }
     }
 }
