@@ -287,6 +287,7 @@ namespace Arcade
         public void End(string consoleColor = null)
         {
             this.END = true;
+
             if (this.ENDMESSAGE == null)
                 throw new Exception("No <endMessage> given. Call End() with an <endMessage>, or manually change the <endMessage> property with myDotAnimation.ENDMESSAGE = \"my end message\"");
 
