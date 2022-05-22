@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Arcade": {
+      "commandName": "Project",
+      "hotReloadEnabled": false
+    }
+  }
+}
