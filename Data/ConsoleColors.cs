@@ -11,7 +11,7 @@ namespace Arcade
     /// </summary>
     public class ConsoleColors
     {
-        public static ConsoleColor DefaultColor { get; set; } = ConsoleColor.White;
+        public static ConsoleColor DefaultColor { get; set; }
         private static ConsoleColor CurrentColor { get; set; } = DefaultColor;
 
         private static Dictionary<string, ConsoleColor> Colors = new Dictionary<string, ConsoleColor>(new List<KeyValuePair<string, ConsoleColor>>()
@@ -39,9 +39,7 @@ namespace Arcade
         /// </summary>
         public static void Set(string color)
         {
-            if (!Colors.Keys.Contains(color))
-                throw new Exception(color + " does not exist\n\nExisting colors: black, darkblue, darkgreen, darkcyan, darkred, darkmagenta, darkyellow, darkgray, gray, blue, green, cyan, red, magenta, yellow, white");
-
+            CheckColor(color);
             ConsoleColors.CurrentColor = Colors[color];
             Console.ForegroundColor = ConsoleColors.CurrentColor;
         }
@@ -52,6 +50,27 @@ namespace Arcade
         public static void Reset()
         {
             Console.ForegroundColor = ConsoleColors.DefaultColor;
+        }
+
+        /// <summary>
+        /// Set <see cref="ConsoleColors.DefaultColor"/> to <paramref name="color"/>
+        /// </summary>
+        /// <param name="color">The <paramref name="color"/> to change <see cref="ConsoleColors.DefaultColor"/> to</param>
+        public static void ChangeDefaultColor(string color)
+        {
+            CheckColor(color);
+            ConsoleColors.DefaultColor = Colors[color];
+        }
+
+        /// <summary>
+        /// Make sure the given color is in the <see cref="ConsoleColors.Colors"/> dictionary
+        /// </summary>
+        /// <param name="color">The <paramref name="color"/> to check</param>
+        /// <exception cref="ArgumentException"></exception>
+        private static void CheckColor(string color)
+        {
+            if (!Colors.Keys.Contains(color))
+                throw new Exception(color + " does not exist\n\nExisting colors: black, darkblue, darkgreen, darkcyan, darkred, darkmagenta, darkyellow, darkgray, gray, blue, green, cyan, red, magenta, yellow, white");
         }
     }
 }
