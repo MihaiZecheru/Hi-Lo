@@ -143,6 +143,16 @@ namespace Arcade
             }
         }
 
+        /// <summary>
+        /// Checks if the given <see cref="User"/> exists by checking for users with the given <paramref name="username"/> and <paramref name="password"/>
+        /// </summary>
+        /// <param name="username">The <paramref name="username"/> to look for</param>
+        /// <param name="password">The <paramref name="password"/> to look for</param>
+        /// <returns>
+        /// <see langword="0"/> if there is no <see cref="User"/> that matches the given <paramref name="username"/> and <paramref name="password"/>
+        /// <br><br></br></br>
+        /// <see cref="User.id"/> if there is a <see cref="User"/> that matches the given <paramref name="username"/> and <paramref name="password"/>
+        /// </returns>
         public static async Task<int> DoesUserExist(string username, string password)
         {
             using (HttpClient client = new HttpClient())
@@ -163,6 +173,33 @@ namespace Arcade
 
                         Dictionary<string, object> user = users[0];
                         return Convert.ToInt32(user["id"]);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if <paramref name="username"/> is available
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns><see langword="true"/> if the <paramref name="username"/> is available, <see langword="false"/> if <paramref name="username"/> is not available</returns>
+        public static async Task<bool> CheckUsernameAvailability(string username)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("X-API-ID", api_id);
+                client.DefaultRequestHeaders.Add("X-CLIENT-TOKEN", api_key);
+                using (HttpResponseMessage response = await client.GetAsync(api_url + $"?username={username}&page_size=1&page=1"))
+                {
+                    response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    using (HttpContent responseContent = response.Content)
+                    {
+                        string content = await responseContent.ReadAsStringAsync();
+                        Dictionary<string, object> _db = JsonConvert.DeserializeObject<Dictionary<string, object>>(content);
+                        Newtonsoft.Json.Linq.JArray _data = (Newtonsoft.Json.Linq.JArray)_db["data"];
+                        List<Dictionary<string, object>> users = _data.ToObject<List<Dictionary<string, object>>>();
+
+                        return users.Count == 0; // when users.Count == 0 the name is available
                     }
                 }
             }
