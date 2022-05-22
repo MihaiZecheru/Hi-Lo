@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data
+namespace Arcade
 {
     /// <summary>
     /// Change the color of <see cref="Console.ForegroundColor"/>
@@ -41,9 +41,12 @@ namespace Data
         public static void Set(string color)
         {
             if (!Colors.Keys.Contains(color))
-                throw new Exception("Color does not exist\n\nExisting colors: black, darkblue, darkgreen, darkcyan, darkred, darkmagenta, darkyellow, darkgray, gray, blue, green, cyan, red, magenta, yellow, white");
+                throw new Exception(color + " does not exist\n\nExisting colors: black, darkblue, darkgreen, darkcyan, darkred, darkmagenta, darkyellow, darkgray, gray, blue, green, cyan, red, magenta, yellow, white");
 
-            Console.ForegroundColor = Colors[color];
+            if (Colors[color] == CurrentColor) return;
+            ConsoleColors.PreviousColor = ConsoleColors.CurrentColor;
+            ConsoleColors.CurrentColor = Colors[color];
+            Console.ForegroundColor = ConsoleColors.CurrentColor;
         }
 
         /// <summary>
@@ -51,7 +54,7 @@ namespace Data
         /// </summary>
         public static void Reset()
         {
-            Console.ForegroundColor = DefaultColor;
+            Console.ForegroundColor = ConsoleColors.DefaultColor;
         }
 
         /// <summary>
@@ -59,7 +62,7 @@ namespace Data
         /// </summary>
         public static void SetToPrevious()
         {
-            Console.ForegroundColor = PreviousColor;
+            Console.ForegroundColor = ConsoleColors.PreviousColor;
         }
     }
 }
