@@ -31,11 +31,12 @@
                 Console.Write(this.MESSAGE);
                 while (true)
                 {
-                    Console.Write($"\r{this.MESSAGE} .");
+                    Console.CursorVisible = false;
+                    Console.Write($"\r{this.MESSAGE} .  ");
                     if (END) return;
                     Thread.Sleep(350);
                     if (END) return;
-                    Console.Write($"\r{this.MESSAGE} ..");
+                    Console.Write($"\r{this.MESSAGE} .. ");
                     if (END) return;
                     Thread.Sleep(350);
                     if (END) return;
@@ -54,6 +55,7 @@
         public void End(string endMessage, string consoleColor = null)
         {
             this.END = true;
+            Console.CursorVisible = true;
 
             Console.Write($"\r{this.MESSAGE} ... ");
 
@@ -70,6 +72,7 @@
         public void End(string consoleColor = null)
         {
             this.END = true;
+            Console.CursorVisible = true;
 
             if (this.ENDMESSAGE == null)
                 throw new Exception("No <endMessage> given. Call End() with an <endMessage>, or manually change the <endMessage> property with myDotAnimation.ENDMESSAGE = \"my end message\"");
