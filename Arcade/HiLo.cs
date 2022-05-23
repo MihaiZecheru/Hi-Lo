@@ -8,15 +8,7 @@ namespace HiLo
 
         public static async Task Main(string[] args)
         {
-            Console.Title = "Arcade: Hi-Lo";
-
-            Arcade.ConsoleColors.ChangeDefaultColor("cyan");   
-            ShowHelpMessage();
-
-            User user = await Arcade.User.SignIn();
-
-            double bet = await user.GetBet();
-            Console.Clear();
+            Initialize();
         }
 
         private static void ShowHelpMessage()
@@ -26,6 +18,20 @@ namespace HiLo
             Arcade.ConsoleColors.Reset(); Console.WriteLine($"{dl}\n\n{helpMessage}\n{dl}");
             Arcade.ConsoleColors.Set("white"); Console.ReadLine().Trim(' ');
             Arcade.ConsoleColors.Reset(); Console.Clear();
+        }
+
+        private static async Task<double> Initialize()
+        {
+            Console.Title = "Arcade: Hi-Lo";
+
+            Arcade.ConsoleColors.ChangeDefaultColor("cyan");
+            ShowHelpMessage();
+
+            User user = await Arcade.User.SignIn();
+
+            double bet = await user.GetBet();
+            Console.Clear();
+            return bet;
         }
     }   
 }
