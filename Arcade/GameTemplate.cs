@@ -22,7 +22,7 @@ namespace Arcade.Template
         /// </summary>
         private static void ShowHelpMessage()
         {
-            string helpMessage = "Template HelpMessage";
+            string helpMessage = @"Template HelpMessage";
             Arcade.ConsoleColors.Set("cyan"); Console.WriteLine($"{dl}\n\n{helpMessage}\n{dl}");
             Arcade.ConsoleColors.Set("white"); Console.ReadLine().Trim(' ');
             Arcade.ConsoleColors.Set("cyan"); Console.Clear();
