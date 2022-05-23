@@ -354,8 +354,8 @@ namespace Arcade
                 Console.WriteLine($"${this.balance}"); Arcade.ConsoleColors.Set("cyan");
                 Console.Write($"Place Your Bet: "); Arcade.ConsoleColors.Set("magenta");
                 string response = Console.ReadLine();
-                while (response.Contains('$'))
-                    response.Replace("$", string.Empty);
+                while (response.Contains("$"))
+                    response = response.Replace("$", "");
                 bool valid = int.TryParse(response, out bet);
                 if (valid)
                 {
@@ -389,7 +389,7 @@ namespace Arcade
 
             Console.Write($"{dl}\n\nThe bet you placed was: ");
             Arcade.ConsoleColors.Set("magenta");
-            Console.WriteLine($"{bet}\n");
+            Console.WriteLine($"${bet}\n");
 
             DotAnimation dotAnimation = new DotAnimation(message: "Updating Balance", endMessage: $"Done!", messageConsoleColor: "cyan", endMessageConsoleColor: "magenta");
             await this.RemoveBalance(bet);
