@@ -361,6 +361,10 @@ namespace Arcade
                     {
                         error = "You can't afford this bet!";
                     }
+                    else if (bet == 0)
+                    {
+                        error = "Your bet must be greater than 0!";
+                    }
                     else
                     {
                         ConsoleColors.Set("cyan"); Console.WriteLine($"\n{dl}\n");
