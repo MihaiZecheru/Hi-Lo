@@ -50,9 +50,12 @@ namespace Arcade.HiLo
         {
             get
             {
+                string s = "";
+                for (int i = 0; i < 54; i++) s += ' ';
+
                 string m = "";
                 foreach (var line in model)
-                    m += line + "\n";
+                    m += $"{s}{line}\n";
                 return m;
             }
         }
@@ -61,7 +64,7 @@ namespace Arcade.HiLo
         /// Creates a new <see cref="Card"/>
         /// </summary>
         /// <param name="not">The next card will <paramref name="not"/> be of this value</param>
-        public Card(int not)
+        public Card(int not = -1)
         {
             int number;
             do
