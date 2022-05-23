@@ -48,7 +48,7 @@ namespace Arcade
             Console.Write($"\"\n{s}\"password\": \""); Arcade.ConsoleColors.Set("magenta");
             Console.Write(this.password);              Arcade.ConsoleColors.Set("cyan");
             Console.Write($"\"\n{s}\"balance\": ");    Arcade.ConsoleColors.Set("magenta");
-            Console.Write(this.balance);               Arcade.ConsoleColors.Set("cyan");
+            Console.Write($"${this.balance}");               Arcade.ConsoleColors.Set("cyan");
             Console.WriteLine("\n}");
         }
 
@@ -351,7 +351,7 @@ namespace Arcade
                 Console.WriteLine($"{dl}\n\n{s}Place Your Bet!\n\n{dl}\n");
 
                 Console.Write("Your current balance is: "); Arcade.ConsoleColors.Set("magenta");
-                Console.WriteLine(this.balance); Arcade.ConsoleColors.Set("cyan");
+                Console.WriteLine($"${this.balance}"); Arcade.ConsoleColors.Set("cyan");
                 Console.Write($"Place Your Bet: "); Arcade.ConsoleColors.Set("magenta");
                 string response = Console.ReadLine();
                 bool valid = int.TryParse(response, out bet);
@@ -363,7 +363,7 @@ namespace Arcade
                     }
                     else if (bet == 0)
                     {
-                        error = "Your bet must be greater than 0!";
+                        error = "Your bet must be greater than $0!";
                     }
                     else
                     {
@@ -395,7 +395,7 @@ namespace Arcade
             dotAnimation.End();
             Console.Write("\nYour balance is now: ");
             Arcade.ConsoleColors.Set("magenta");
-            Console.Write(this.balance);
+            Console.Write($"${this.balance}");
             Arcade.ConsoleColors.Set("cyan");
             Console.WriteLine($"\n\n{dl}\n");
             Thread.Sleep(1000);
