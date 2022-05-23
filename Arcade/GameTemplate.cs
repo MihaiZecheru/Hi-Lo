@@ -23,7 +23,7 @@ namespace Template
 
         private static async Task<double> Initialize()
         {
-            Console.Title = "Arcade: Hi-Lo";
+            Console.Title = "Template";
 
             ShowHelpMessage();
 
