@@ -8,9 +8,19 @@ namespace Arcade.HiLo
 {
     internal class Card
     {
+        /// <summary>
+        /// The <see cref="Card"/>'s name, eg. two, king
+        /// </summary>
         public string Name { get; set; }
+        
+        /// <summary>
+        /// The <see cref="Card"/>'s value, eg. 5, 6
+        /// </summary>
         public int Value { get; set; }
 
+        /// <summary>
+        /// Translate a <see cref="Card.Value"/> to a <see cref="Card.Name"/>
+        /// </summary>
         private static Dictionary<int, string> translate { get; set; } = new Dictionary<int, string>(new List<KeyValuePair<int, string>>()
         {
             new KeyValuePair<int, string>(1, "ace"),
@@ -28,7 +38,14 @@ namespace Arcade.HiLo
             new KeyValuePair<int, string>(14, "king")
         });
 
+        /// <summary>
+        /// The <see cref="Card.Model"/> in its deconstructed form
+        /// </summary>
         private string[] model { get; set; }
+        
+        /// <summary>
+        /// The full ASCII playing card
+        /// </summary>
         public string Model 
         {
             get
@@ -40,14 +57,18 @@ namespace Arcade.HiLo
             }
         }
 
-        public Card()
+        /// <summary>
+        /// Creates a new <see cref="Card"/>
+        /// </summary>
+        /// <param name="not">The next card will <paramref name="not"/> be of this value</param>
+        public Card(int not)
         {
             int number;
             do
             {
                 Random random = new Random();
                 number = random.Next(1, 15); // cards between 1 and 14 inclusive
-            } while (number == 11);
+            } while (number == 11 || number == not);
 
             this.Value = number;
             this.Name = Card.translate[number];
@@ -55,4 +76,3 @@ namespace Arcade.HiLo
         }
     }
 }
-
