@@ -1,5 +1,5 @@
 ﻿/*
-using Arcade;
+using Arcade.Template;
 
 namespace Template
 {
