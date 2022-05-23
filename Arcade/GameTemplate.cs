@@ -37,7 +37,7 @@ namespace Template
 
         public static void StartGame(double bet)
         {
-
+            
         }
     }
 }
