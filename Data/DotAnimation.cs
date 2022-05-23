@@ -3,7 +3,7 @@
     /// <summary>
     /// Loading animation with dots ...
     /// </summary>
-    internal class DotAnimation
+    public class DotAnimation
     {
         private bool END { get; set; }
         private string ENDCOLOR { get; set; }
