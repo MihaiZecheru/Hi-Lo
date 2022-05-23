@@ -354,6 +354,8 @@ namespace Arcade
                 Console.WriteLine($"${this.balance}"); Arcade.ConsoleColors.Set("cyan");
                 Console.Write($"Place Your Bet: "); Arcade.ConsoleColors.Set("magenta");
                 string response = Console.ReadLine();
+                while (response.Contains('$'))
+                    response.Replace("$", string.Empty);
                 bool valid = int.TryParse(response, out bet);
                 if (valid)
                 {
