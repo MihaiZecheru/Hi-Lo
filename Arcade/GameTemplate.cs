@@ -13,7 +13,7 @@ namespace Arcade.Template
         public static async Task Main(string[] args)
         {
             (User user, double bet) = await Initialize();
-
+            Arcade.ConsoleColors.Set("white");
             StartGame(user, bet);
         }
 
