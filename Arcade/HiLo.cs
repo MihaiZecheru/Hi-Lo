@@ -8,7 +8,9 @@ namespace HiLo
 
         public static async Task Main(string[] args)
         {
-            Initialize();
+            double bet = await Initialize();
+
+            StartGame(bet);
         }
 
         private static void ShowHelpMessage()
@@ -32,6 +34,11 @@ namespace HiLo
             double bet = await user.GetBet();
             Console.Clear();
             return bet;
+        }
+
+        public static void StartGame(double bet)
+        {
+
         }
     }   
 }
