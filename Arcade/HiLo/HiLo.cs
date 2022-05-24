@@ -22,7 +22,7 @@
             */
 
             ConsoleColors.Set("cyan");
-            TrainAnimation.ShowLose();
+            TrainAnimation.ShowYouWin();
             ConsoleColors.Reset();
         }
 
@@ -157,13 +157,13 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
             string phrase;
             if (won)
             {
-                TrainAnimation.ShowWin();
+                TrainAnimation.ShowYouWin();
                 Thread.Sleep(2000);
                 phrase = $"You won ${bet} with your great Hi-Lo skills!!!";
             }
             else
             {
-                TrainAnimation.ShowLose();
+                TrainAnimation.ShowYouLose();
                 Thread.Sleep(10000);
                 return true;
                 phrase = $"You lost ${bet} because of your terrible Hi-Lo skills :(";
