@@ -12,7 +12,18 @@
             //(User user, double bet) = await Initialize();
 
             //StartGame(user, bet);
-            StartGame(null, 5);
+            /*
+            while (true)
+            {
+                Console.Clear();
+                bool end = StartGame(null, 5);
+                if (end) break;
+            }
+            */
+
+            ConsoleColors.Set("cyan");
+            TrainAnimation.ShowLose();
+            ConsoleColors.Reset();
         }
 
         /// <summary>
@@ -53,93 +64,114 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
         /// The Hi-Lo Game
         /// </summary>
         /// <param name="bet">The <see cref="User"/>'s bet</param>
-        public static void StartGame(User user, double bet)
+        public static bool StartGame(User user, double bet)
         {
             Card card = new Card();
-
-            string response;
-            while (true)
+            bool won = false;
+            for (int i = 0; i < 3; i++)
             {
+                if (i != 0) Thread.Sleep(1500);
+                else card = new Card();
                 Console.Clear();
-                Arcade.ConsoleColors.Set("cyan");
+
+                string response;
+                while (true)
+                {
+                    Console.Clear();
+                    Arcade.ConsoleColors.Set("cyan");
+                    Console.WriteLine($"{dl}\n\n{card.Model}\n{dl}\n");
+                    Console.Write("Will the next card be "); Arcade.ConsoleColors.Set("magenta");
+                    Console.Write("HIGHER "); Arcade.ConsoleColors.Set("cyan");
+                    Console.Write("or "); Arcade.ConsoleColors.Set("magenta");
+                    Console.Write("LOWER"); Arcade.ConsoleColors.Set("cyan");
+                    Console.Write(": "); Arcade.ConsoleColors.Set("magenta");
+                    response = Console.ReadLine().Trim(' ').ToLower();
+                    Arcade.ConsoleColors.Set("cyan");
+
+                    if (new string[] { "higher", "lower", "less", "more", "low", "high", "lo", "hi", "l", "h" }.Contains(response)) break;
+                }
+
+                int previousCardValue = card.Value;
+
+                card = new Card(not: previousCardValue);
+
+                // Display next card
+                Console.Clear();
+                Console.WriteLine($"{dl}\n\n\n\n\n\n\n\n\n\n\n\n{dl}\n");
+                Arcade.DotAnimation dotAnimation = new Arcade.DotAnimation(message: "\t\t\t\t\t\t The next card is", messageConsoleColor: "cyan", endMessageConsoleColor: "magenta", endMessage: "");
+                Thread.Sleep(2000);
+                dotAnimation.End();
+                Console.Clear();
                 Console.WriteLine($"{dl}\n\n{card.Model}\n{dl}\n");
-                Console.Write("Will the next card be "); Arcade.ConsoleColors.Set("magenta");
-                Console.Write("HIGHER "); Arcade.ConsoleColors.Set("cyan");
-                Console.Write("or "); Arcade.ConsoleColors.Set("magenta");
-                Console.Write("LOWER"); Arcade.ConsoleColors.Set("cyan");
-                Console.Write(": "); Arcade.ConsoleColors.Set("magenta");
-                response = Console.ReadLine().Trim(' ').ToLower();
-                Arcade.ConsoleColors.Set("cyan");
+                Console.Write("\t\t\t\t\t\t The next card is: ");
+                Arcade.ConsoleColors.Set("magenta");
+                Console.WriteLine($"{card.Name}\n");
 
-                if (new string[] { "higher", "lower", "less", "more", "low", "high", "l", "h" }.Contains(response)) break;
+                bool wins;
+
+                // LOWER
+                if (card.Value < previousCardValue)
+                {
+                    // check if user was right
+                    if (new string[] { "lower", "less", "low", "lo", "l" }.Contains(response))
+                        // user is right, user wins
+                        wins = true;
+                    else
+                        // user is wrong, user loses
+                        wins = false;
+                }
+                // HIGHER
+                else
+                {
+                    if (new string[] { "higher", "more", "high", "hi", "h" }.Contains(response))
+                        // user is right, user wins
+                        wins = true;
+                    else
+                        // user is wrong, user loses
+                        wins = false;
+                }
+
+                Console.Write(!wins ? "\t\t\t\t\t\t      " : i != 2 ? "\t\t\t\t\t" : "\t\t\t\t");
+                if (wins)
+                {
+                    Arcade.ConsoleColors.Set("green");
+                    Console.Write(" YOU WIN!!! ");
+                    Arcade.ConsoleColors.Set("cyan");
+                    if (i != 2)
+                        Console.Write($"Just {2 - i} more rounds to go!");
+                    else
+                        Console.Write("Game Over!");
+                }
+                else
+                {
+                    Arcade.ConsoleColors.Set("darkred");
+                    Console.Write($"YOU LOSE!!!");
+                    Arcade.ConsoleColors.Set("cyan");
+                    break;
+                }
             }
 
-            int previousCardValue = card.Value;
-            
-            card = new Card(not: previousCardValue);
+            Thread.Sleep(1000);
+            Console.Clear();
 
-            // Display next card
-            Console.Clear();
-            Console.WriteLine($"{dl}\n\n\n\n\n\n\n\n\n\n\n\n{dl}\n");
-            Arcade.DotAnimation dotAnimation = new Arcade.DotAnimation(message: "\t\t\t\t\t\t The next card is", messageConsoleColor: "cyan", endMessageConsoleColor: "magenta", endMessage: "");
-            Thread.Sleep(2000);
-            dotAnimation.End();
-            Console.Clear();
-            Console.WriteLine($"{dl}\n\n{card.Model}\n{dl}\n");
-            Console.Write("\t\t\t\t\t\t The next card is: ");
+            string phrase;
+            if (won)
+            {
+                TrainAnimation.ShowWin();
+                Thread.Sleep(2000);
+                phrase = $"You won ${bet} with your great Hi-Lo skills!!!";
+            }
+            else
+            {
+                TrainAnimation.ShowLose();
+                Thread.Sleep(10000);
+                return true;
+                phrase = $"You lost ${bet} because of your terrible Hi-Lo skills :(";
+            }
+
+            Console.Write($"{phrase}\n\nPlay again? (y/n): ");
             Arcade.ConsoleColors.Set("magenta");
-            Console.WriteLine($"{card.Name}\n");
-
-            bool wins;
-
-            // LOWER
-            if (card.Value < previousCardValue)
-            {
-                // check if user was right
-                if (new string[] { "lower", "less", "low", "l" }.Contains(response))
-                {
-                    // user is right, user wins
-                    wins = true;
-                }
-                else
-                {
-                    // user is wrong, user loses
-                    // todo
-                    wins = false;
-                }
-            }
-            // HIGHER
-            else
-            {
-                if (new string[] { "higher", "more", "high", "h" }.Contains(response))
-                {
-                    // user is right, user wins
-                    wins = true;
-                }
-                else
-                {
-                    // user is wrong, user loses
-                    wins = false;
-                }
-            }
-
-            Console.Write("\t\t\t\t\t\t      ");
-            if (wins)
-            {
-                Arcade.ConsoleColors.Set("green");
-                Console.Write(" YOU WIN!!!");
-
-                // todo add more here
-            }
-            else
-            {
-                Arcade.ConsoleColors.Set("darkred");
-                Console.Write("YOU LOSE!!!");
-
-                // todo add more here
-            }
-
-            Arcade.ConsoleColors.Set("cyan");
+            return new string[] {"n", "no"}.Contains(Console.ReadLine().Trim(' ').ToLower());
         }
     }
 }
