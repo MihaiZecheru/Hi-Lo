@@ -1,8 +1,9 @@
 ﻿// Replace all occurances of the word "Template" with the name of the game
 
+/*
 namespace Arcade.Template
 {
-    public class GameTemplate
+    public class Game
     {
         /// <summary>
         /// Dotted line the size of <see cref="Console.BufferWidth"/> (120)
@@ -69,3 +70,4 @@ namespace Arcade.Template
         }
     }
 }
+*/
