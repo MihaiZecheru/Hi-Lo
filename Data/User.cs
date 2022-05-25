@@ -20,7 +20,7 @@ namespace Arcade
         /// </summary>
         /// <param name="id">
         /// Database Identifier, MUST MATCH WITH THE DATABASE.<br></br>
-        /// Use <see cref="Arcade.Database.GetNextId"/> to get the proper id
+        /// Use <see cref="Arcade.Backend.GetNextId"/> to get the proper id
         /// </param>
         /// <param name="name"><see cref="User"/>'s name</param>
         /// <param name="password"><see cref="User"/>'s password</param>
@@ -75,7 +75,7 @@ namespace Arcade
         public async Task<User> AddBalance(double amount)
         {
             this.balance += amount;
-            return await Arcade.Database.UpdateUser(this);
+            return await Arcade.Backend.UpdateUser(this);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Arcade
         public async Task<User> RemoveBalance(double amount)
         {
             this.balance -= amount;
-            return await Arcade.Database.UpdateUser(this);
+            return await Arcade.Backend.UpdateUser(this);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Arcade
                     Console.Write("\n");
 
                     DotAnimation dotAnimationChecking = new DotAnimation(message: "Looking for your account", messageConsoleColor: "cyan") ;
-                    id = await Arcade.Database.DoesUserExist(username, password);
+                    id = await Arcade.Backend.DoesUserExist(username, password);
 
                     if (id == 0)
                     {
@@ -147,7 +147,7 @@ namespace Arcade
                 } while (id == 0);
 
                 DotAnimation dotAnimationGetting = new DotAnimation(message: "Signing in", endMessage: "Done!\n", messageConsoleColor: "cyan", endMessageConsoleColor: "magenta");
-                User user = await Arcade.Database.GetUser(id);
+                User user = await Arcade.Backend.GetUser(id);
                 
                 Thread.Sleep(2000);
                 dotAnimationGetting.End();
@@ -206,7 +206,7 @@ namespace Arcade
 
                     Console.Write("\n\n");
                     DotAnimation dotAnimation = new DotAnimation(message: "Checking Username Availability", messageConsoleColor: "cyan");
-                    bool available = await Database.CheckUsernameAvailability(username);
+                    bool available = await Backend.CheckUsernameAvailability(username);
                     if (!available)
                     {
                         Thread.Sleep(500);
@@ -275,7 +275,7 @@ namespace Arcade
                 Console.WriteLine($"\n{dl}\n");
 
                 ConsoleColors.Reset();
-                User user = await Arcade.Database.CreateUser(username, password, 375);
+                User user = await Arcade.Backend.CreateUser(username, password, 375);
                 return user;
             }
         }
