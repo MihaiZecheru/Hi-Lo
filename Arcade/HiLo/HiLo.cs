@@ -12,14 +12,13 @@
             //(User user, double bet) = await Initialize();
 
             //StartGame(user, bet);
-            /*
+
             while (true)
             {
                 Console.Clear();
                 bool end = StartGame(null, 5);
                 if (end) break;
             }
-            */
 
             ConsoleColors.Set("cyan");
             TrainAnimation.ShowYouWin();
@@ -38,7 +37,7 @@ or LOWER than your current card
 Playing Card Points:
 Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
             Arcade.ConsoleColors.Set("cyan"); Console.WriteLine($"{dl}\n\n{helpMessage}\n{dl}");
-            Arcade.ConsoleColors.Set("white"); Console.ReadLine().Trim(' ');
+            Arcade.ConsoleColors.Set("white"); Console.ReadKey();
             Arcade.ConsoleColors.Set("cyan"); Console.Clear();
         }
 
@@ -107,32 +106,30 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
                 Arcade.ConsoleColors.Set("magenta");
                 Console.WriteLine($"{card.Name}\n");
 
-                bool wins;
-
                 // LOWER
                 if (card.Value < previousCardValue)
                 {
                     // check if user was right
                     if (new string[] { "lower", "less", "low", "lo", "l" }.Contains(response))
                         // user is right, user wins
-                        wins = true;
+                        won = true;
                     else
                         // user is wrong, user loses
-                        wins = false;
+                        won = false;
                 }
                 // HIGHER
                 else
                 {
                     if (new string[] { "higher", "more", "high", "hi", "h" }.Contains(response))
                         // user is right, user wins
-                        wins = true;
+                        won = true;
                     else
                         // user is wrong, user loses
-                        wins = false;
+                        won = false;
                 }
 
-                Console.Write(!wins ? "\t\t\t\t\t\t      " : i != 2 ? "\t\t\t\t\t" : "\t\t\t\t");
-                if (wins)
+                Console.Write(!won ? "\t\t\t\t\t\t      " : i != 2 ? "\t\t\t\t\t" : "\t\t\t\t");
+                if (won)
                 {
                     Arcade.ConsoleColors.Set("green");
                     Console.Write(" YOU WIN!!! ");
@@ -158,20 +155,17 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
             if (won)
             {
                 TrainAnimation.ShowYouWin();
-                Thread.Sleep(2000);
                 phrase = $"You won ${bet} with your great Hi-Lo skills!!!";
             }
             else
             {
                 TrainAnimation.ShowYouLose();
-                Thread.Sleep(10000);
-                return true;
                 phrase = $"You lost ${bet} because of your terrible Hi-Lo skills :(";
             }
 
-            Console.Write($"{phrase}\n\nPlay again? (y/n): ");
+            Console.Write($"{phrase}\n\nPlay again for ${bet}? (y/n): ");
             Arcade.ConsoleColors.Set("magenta");
-            return new string[] {"n", "no"}.Contains(Console.ReadLine().Trim(' ').ToLower());
+            return ConsoleKey.N == Console.ReadKey().Key;
         }
     }
 }
