@@ -1,12 +1,11 @@
 ﻿// Replace all occurances of the word "Template" with the name of the game
 
-/*
 namespace Arcade.Template
 {
-    public class Game
+    public class GameTemplate
     {
         /// <summary>
-        /// Dotted line
+        /// Dotted line the size of <see cref="Console.BufferWidth"/> (120)
         /// </summary>
         private static string dl { get; } = "------------------------------------------------------------------------------------------------------------------------";
 
@@ -14,7 +13,15 @@ namespace Arcade.Template
         {
             (User user, double bet) = await Initialize();
 
-            StartGame(user, bet);
+            while (true)
+            {
+                Console.Clear();
+                bool continueGame = StartGame(user, bet);
+                if (!continueGame) break;
+            }
+
+            ConsoleColors.Set("cyan");
+            Backend.Show_WhereToFindLeaderboardsMessage();
         }
 
         /// <summary>
@@ -50,10 +57,15 @@ namespace Arcade.Template
         /// The Template Game
         /// </summary>
         /// <param name="bet">The <see cref="User"/>'s bet</param>
-        public static void StartGame(User user, double bet)
+        public static bool StartGame(User user, double bet)
         {
-            
+            // the user's winning status
+            bool won = false;
+
+            Thread.Sleep(1000);
+            Console.Clear();
+
+            return Backend.EndGameScene(won, bet, user.balance, "Hi-Lo");
         }
     }
 }
-*/
