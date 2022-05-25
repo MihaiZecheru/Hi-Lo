@@ -16,8 +16,8 @@
             while (true)
             {
                 Console.Clear();
-                bool end = StartGame(null, 5);
-                if (end) break;
+                bool continueGame = StartGame(null, 5);
+                if (!continueGame) break;
             }
 
             ConsoleColors.Set("cyan");
@@ -128,7 +128,7 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
                         won = false;
                 }
 
-                Console.Write(!won ? "\t\t\t\t\t\t      " : i != 2 ? "\t\t\t\t\t" : "\t\t\t\t");
+                Console.Write(!won ? "\t\t\t\t\t\t      " : i != 2 ? "\t\t\t\t\t" : "\t\t\t\t\t\t ");
                 if (won)
                 {
                     Arcade.ConsoleColors.Set("green");
@@ -138,6 +138,7 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
                         Console.Write($"Just {2 - i} more rounds to go!");
                     else
                         Console.Write("Game Over!");
+                    Thread.Sleep(2000);
                 }
                 else
                 {
@@ -164,8 +165,8 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
             }
 
             Console.Write($"{phrase}\n\nPlay again for ${bet}? (y/n): ");
-            Arcade.ConsoleColors.Set("magenta");
-            return ConsoleKey.N == Console.ReadKey().Key;
+            ConsoleKey key = Console.ReadKey().Key;
+            return ConsoleKey.Y == key;
         }
     }
 }
