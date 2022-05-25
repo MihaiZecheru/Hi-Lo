@@ -6,6 +6,11 @@ namespace Arcade.Template
     public class Game
     {
         /// <summary>
+        /// The name of the <see cref="Game"/>
+        /// </summary>
+        private static string Name { get; } = "Template";
+
+        /// <summary>
         /// Dotted line the size of <see cref="Console.BufferWidth"/> (120)
         /// </summary>
         private static string dl { get; } = "------------------------------------------------------------------------------------------------------------------------";
@@ -66,7 +71,7 @@ namespace Arcade.Template
             Thread.Sleep(1000);
             Console.Clear();
 
-            return Backend.EndGameScene(won, bet, user.balance, "Hi-Lo");
+            return Backend.EndGameScene(won, bet, user.balance, Game.Name);
         }
     }
 }
