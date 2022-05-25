@@ -1,6 +1,4 @@
-﻿// todo: make sure all games start with the user signing in
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 /*
  * This class will handle the backend of the Arcade Console Application and Arcade Discord Bot
@@ -207,19 +205,26 @@ namespace Arcade
 
         private static string dl { get; } = "------------------------------------------------------------------------------------------------------------------------";
 
-        private static string WhereToFindLeaderboardsMessage = "y to open";
         public static void Show_WhereToFindLeaderboardsMessage()
         {
             Console.Clear();
-            Console.Write($"{dl}\n\n{WhereToFindLeaderboardsMessage}\n\n{dl}");
+            Arcade.ConsoleColors.Set("cyan");
+            Console.Write($"{dl}\n\nArcade has a leaderboard! You can see where you place against all Arcade players at ");
+            Arcade.ConsoleColors.Set("magenta");
+            Console.WriteLine("https://arcade.mzecheru.com\n");
+            Arcade.ConsoleColors.Set("cyan");
+            Console.WriteLine($"Do you want to go there now? (y/n): \n\n{dl}");
+            Arcade.ConsoleColors.Set("magenta");
+            Console.SetCursorPosition(36, 4);
             
             // WhereToFindLeaderboardsMessage asks if the user wants to open the leaderboards url in browser
             bool openInBrowser = ConsoleKey.Y == Console.ReadKey().Key;
-
+            Arcade.ConsoleColors.Reset();
+         
             if (openInBrowser)
-                System.Diagnostics.Process.Start("https://spanish.mzecheru.com");
+                System.Diagnostics.Process.Start("explorer", "https://arcade.mzecheru.com");
         }
-        
+
         public static bool EndGameScene(bool won, double bet, double userBalance, string gameName)
         {
             string phrase;
@@ -231,7 +236,7 @@ namespace Arcade
             else
             {
                 TrainAnimation.ShowYouLose();
-                phrase = $"You lost ${bet} because of your terrible Hi-Lo skills ...\n\nYou now have ${userBalance}";
+                phrase = $"You lost ${bet} because of your terrible Hi-Lo skills ...\n\nYou now have ${userBalance} ";
             }
 
             if (userBalance > 500)
