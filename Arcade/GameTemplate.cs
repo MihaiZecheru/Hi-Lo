@@ -24,7 +24,7 @@ namespace Arcade.Template
         {
             string helpMessage = @"Template HelpMessage";
             Arcade.ConsoleColors.Set("cyan"); Console.WriteLine($"{dl}\n\n{helpMessage}\n{dl}");
-            Arcade.ConsoleColors.Set("white"); Console.ReadLine().Trim(' ');
+            Arcade.ConsoleColors.Set("white"); Console.ReadKey();
             Arcade.ConsoleColors.Set("cyan"); Console.Clear();
         }
 

@@ -178,7 +178,7 @@ namespace Arcade
                     Arcade.ConsoleColors.Set("magenta");
                     username = Console.ReadLine().Trim(' ');
 
-                    string response;
+                    ConsoleKey response;
                     while (true)
                     {
                         Console.Clear(); Arcade.ConsoleColors.Set("cyan");
@@ -192,12 +192,12 @@ namespace Arcade
                         Arcade.ConsoleColors.Set("cyan");
                         Console.Write($"\n{dl}\n\nDo you want to choose a different username? (y/n): ");
                         Arcade.ConsoleColors.Set("magenta");
-                        response = Console.ReadLine().Trim(' ');
-                        if (new string[] { "yes", "y", "n", "no" }.Contains(response))
+                        response = Console.ReadKey().Key;
+                        if (response == ConsoleKey.Y || response == ConsoleKey.N)
                             break;
                     }
 
-                    if (response == "y" || response == "yes")
+                    if (response == ConsoleKey.Y)
                     {
                         first = true;
                         Console.Clear();
@@ -297,8 +297,8 @@ namespace Arcade
              * Type 2 to Sign-Up for an Arcade account. Choose an option:
             */
 
+            int option = -1;
             bool passed;
-            int option;
 
             do
             {
@@ -319,8 +319,19 @@ namespace Arcade
                 Console.Write("2 ");                                                   Arcade.ConsoleColors.Set("cyan");
                 Console.Write("to Sign-Up for an Arcade account. Choose an option: "); Arcade.ConsoleColors.Set("magenta");
 
-                string response = Console.ReadLine().Trim(' ');
-                passed = int.TryParse(response, out option);
+                ConsoleKey response = Console.ReadKey().Key;
+                if (response == ConsoleKey.D1)
+                {
+                    passed = true;
+                    option = 1;
+                }
+                else if (response == ConsoleKey.D2)
+                {
+                    passed = true;
+                    option = 2;
+                }
+                else
+                    passed = false;
                 Arcade.ConsoleColors.Set("cyan");
                 if (!passed) Console.WriteLine("\n" + dl + "\n");
 
@@ -353,7 +364,7 @@ namespace Arcade
                 Console.Write("Your current balance is: "); Arcade.ConsoleColors.Set("magenta");
                 Console.WriteLine($"${this.balance}"); Arcade.ConsoleColors.Set("cyan");
                 Console.Write($"Place Your Bet: "); Arcade.ConsoleColors.Set("magenta");
-                string response = Console.ReadLine();
+                string response = Console.ReadLine().Trim(' ').ToLower();
                 while (response.Contains("$"))
                     response = response.Replace("$", "");
                 bool valid = int.TryParse(response, out bet);

@@ -1,5 +1,5 @@
 ﻿using System.Media;
-// todo maybe add some "chug-a chug-a chug-a chug-a sounds throughout the train_whistle.wav
+
 namespace Arcade
 {
     /// <summary>
@@ -63,7 +63,6 @@ namespace Arcade
         /// <param name="fast">Whether the train will go slow or <paramref name="fast"/>. NOTE: when fast = true, the shape  of the <paramref name="Train"/> may become slightly distorted on weaker machines</param>
         private static void ShowTrain(string[] Train, bool fast = true)
         {
-            // todo make it so that if the user presses a key on their keyboard while the train is going the animation will skip
             int DELAY = fast ? 10 : 30;
 
             Console.Clear();
@@ -108,25 +107,26 @@ namespace Arcade
                 }
             }
 
+            KeyEventListener.Interrupt();
+
             if (OperatingSystem.IsWindows())
                 TrainWhistle?.Stop();
             Console.Clear();
         }
 
+        private static Thread KeyEventListener { get; set; }
         /// <summary>
         /// Begins the KeyEventListener in charge for terminating the <see cref="TrainAnimation"/>
         /// </summary>
         private static void Start_KeyEventListener()
         {
-            new Thread(() =>
+            KeyEventListener = new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-
-                ConsoleKeyInfo keyinfo;
-                keyinfo = Console.ReadKey();
-
+                Console.ReadKey();
                 EndAnimation = true;
-            }).Start();
+            });
+            KeyEventListener.Start();
         }
     }
 }
