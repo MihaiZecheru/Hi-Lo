@@ -107,12 +107,18 @@ namespace Arcade
                 }
             }
 
-            KeyEventListener.Interrupt();
-
+            END_KEL = true;
+            
             if (OperatingSystem.IsWindows())
                 TrainWhistle?.Stop();
             Console.Clear();
+            Thread.Sleep(15);
         }
+
+        /// <summary>
+        /// When <see cref="END_KEL"/> is <see langword="true">, the KeyEventListener in <see cref="Start_KeyEventListener"/> will be terminated
+        /// </summary>
+        private static bool END_KEL = false;
 
         private static Thread KeyEventListener { get; set; }
         /// <summary>
@@ -120,10 +126,19 @@ namespace Arcade
         /// </summary>
         private static void Start_KeyEventListener()
         {
+            END_KEL = false;
             KeyEventListener = new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                Console.ReadKey();
+                while (!END_KEL)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        Console.ReadKey();
+                        break;
+                    }
+                    Thread.Sleep(50);
+                }
                 EndAnimation = true;
             });
             KeyEventListener.Start();
