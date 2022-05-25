@@ -3,26 +3,36 @@
     public class Game
     {
         /// <summary>
-        /// Dotted line
+        /// The name of the <see cref="Game"/>
+        /// </summary>
+        private static string Name { get; } = "Hi-Lo";
+
+        /// <summary>
+        /// Dotted line the size of <see cref="Console.BufferWidth"/> (120)
         /// </summary>
         private static string dl { get; } = "------------------------------------------------------------------------------------------------------------------------";
 
+        /// <summary>
+        /// Boilerplate entry-point for <see cref="Arcade"/> applications
+        /// </summary>
         public static async Task Main(string[] args)
         {
-            //(User user, double bet) = await Initialize();
-
-            //StartGame(user, bet);
+            Backend.Show_WhereToFindLeaderboardsMessage();
+            return; //todo do the thing where you add the dotted line and then move the cursor up and then listen for the console.readkey
+            (User user, double bet) = await Initialize();
 
             while (true)
             {
                 Console.Clear();
-                bool continueGame = StartGame(null, 5);
+                bool continueGame = StartGame(user, bet);
+                
                 if (!continueGame) break;
+                else
+                    user.RemoveBalance(bet);
             }
 
             ConsoleColors.Set("cyan");
-            TrainAnimation.ShowYouWin();
-            ConsoleColors.Reset();
+            Backend.Show_WhereToFindLeaderboardsMessage();
         }
 
         /// <summary>
@@ -31,8 +41,10 @@
         private static void ShowHelpMessage()
         {
             string helpMessage = 
-@"Hi-Lo (pronounced ""High-Low"") is a game where you try to guess if the card succeeding the current card will be HIGHER
-or LOWER than your current card
+@"Hi-Lo (pronounced ""High-Low"") is a game where you try to guess if the next card will be HIGHER
+or LOWER than your current card. 
+
+Note: the following card will never be the same as your current card
 
 Playing Card Points:
 Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
@@ -138,7 +150,6 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
                         Console.Write($"Just {2 - i} more rounds to go!");
                     else
                         Console.Write("Game Over!");
-                    Thread.Sleep(2000);
                 }
                 else
                 {
@@ -152,21 +163,7 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
             Thread.Sleep(1000);
             Console.Clear();
 
-            string phrase;
-            if (won)
-            {
-                TrainAnimation.ShowYouWin();
-                phrase = $"You won ${bet} with your great Hi-Lo skills!!!";
-            }
-            else
-            {
-                TrainAnimation.ShowYouLose();
-                phrase = $"You lost ${bet} because of your terrible Hi-Lo skills :(";
-            }
-
-            Console.Write($"{phrase}\n\nPlay again for ${bet}? (y/n): ");
-            ConsoleKey key = Console.ReadKey().Key;
-            return ConsoleKey.Y == key;
+            return Backend.EndGameScene(won, bet, user.balance, Game.Name);
         }
     }
 }
