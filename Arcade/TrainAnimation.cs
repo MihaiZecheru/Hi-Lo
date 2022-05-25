@@ -8,6 +8,11 @@ namespace Arcade
     internal class TrainAnimation
     {
         /// <summary>
+        /// When this is <see langword="true"/>, the <see cref="TrainAnimation"/> will end
+        /// </summary>
+        private static bool EndAnimation = false;
+
+        /// <summary>
         /// ASCII train with the "You Win" message
         /// </summary>
         private static string[] WinTrain = new string[]
@@ -71,11 +76,15 @@ namespace Arcade
                 TrainWhistle.Load();
             }
 
+            Start_KeyEventListener();
+
             for (int k = Train[0].Length; k != -1 - Console.WindowWidth; k--)
             {
+                if (EndAnimation) break;
                 Thread.Sleep(DELAY);
                 for (int i = 0; i < Train.Length; i++)
                 {
+                    if (EndAnimation) break;
                     for (int j = 0; j < Train[i].Length; j++)
                     {
                         int loc;
@@ -98,6 +107,26 @@ namespace Arcade
                         TrainWhistle?.Play();
                 }
             }
+
+            if (OperatingSystem.IsWindows())
+                TrainWhistle?.Stop();
+            Console.Clear();
+        }
+
+        /// <summary>
+        /// Begins the KeyEventListener in charge for terminating the <see cref="TrainAnimation"/>
+        /// </summary>
+        private static void Start_KeyEventListener()
+        {
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                ConsoleKeyInfo keyinfo;
+                keyinfo = Console.ReadKey();
+
+                EndAnimation = true;
+            }).Start();
         }
     }
 }
