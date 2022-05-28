@@ -17,8 +17,6 @@
         /// </summary>
         public static async Task Main(string[] args)
         {
-            Backend.Show_WhereToFindLeaderboardsMessage();
-            return; //todo do the thing where you add the dotted line and then move the cursor up and then listen for the console.readkey
             (User user, double bet) = await Initialize();
 
             while (true)
