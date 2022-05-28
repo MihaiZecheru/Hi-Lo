@@ -63,6 +63,7 @@ namespace Arcade
         /// <param name="fast">Whether the train will go slow or <paramref name="fast"/>. NOTE: when fast = true, the shape  of the <paramref name="Train"/> may become slightly distorted on weaker machines</param>
         private static void ShowTrain(string[] Train, bool fast = true)
         {
+            EndAnimation = false;
             int DELAY = fast ? 10 : 30;
 
             Console.Clear();
@@ -120,7 +121,11 @@ namespace Arcade
         /// </summary>
         private static bool END_KEL = false;
 
+        /// <summary>
+        /// Key Event Listener <see cref="Thread"/> for stopping the current <see cref="TrainAnimation"/>
+        /// </summary>
         private static Thread KeyEventListener { get; set; }
+
         /// <summary>
         /// Begins the KeyEventListener in charge for terminating the <see cref="TrainAnimation"/>
         /// </summary>
