@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arcade", "Arcade\Arcade.csproj", "{ED373FF2-B879-4D11-9404-6E6275186CC3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend", "Data\Backend.csproj", "{C185B138-602B-479E-8326-8C5C71913DB1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{C052C051-0253-4A1D-A6E8-9322F9AEE4E7}"
+	ProjectSection(SolutionItems) = preProject
+		Arcade\GameTemplate.cs = Arcade\GameTemplate.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hi-Lo", "Hi-Lo\Hi-Lo.csproj", "{5F634FA9-A39D-4CBE-AD48-0CE1D3EB787F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,17 +18,20 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ED373FF2-B879-4D11-9404-6E6275186CC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED373FF2-B879-4D11-9404-6E6275186CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED373FF2-B879-4D11-9404-6E6275186CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED373FF2-B879-4D11-9404-6E6275186CC3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C185B138-602B-479E-8326-8C5C71913DB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C185B138-602B-479E-8326-8C5C71913DB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C185B138-602B-479E-8326-8C5C71913DB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C185B138-602B-479E-8326-8C5C71913DB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F634FA9-A39D-4CBE-AD48-0CE1D3EB787F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F634FA9-A39D-4CBE-AD48-0CE1D3EB787F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F634FA9-A39D-4CBE-AD48-0CE1D3EB787F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F634FA9-A39D-4CBE-AD48-0CE1D3EB787F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5F634FA9-A39D-4CBE-AD48-0CE1D3EB787F} = {C052C051-0253-4A1D-A6E8-9322F9AEE4E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E0BD6228-1238-4840-ADB5-00325D2B14A7}
