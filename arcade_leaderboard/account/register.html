@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//fonts.googleapis.com/css?family=Comfortaa"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+      integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <title>Register With Arcade</title>
+  </head>
+    <section class="vh-100">
+      <div class="container-fluid h-custom">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-md-9 col-lg-6 col-xl-5">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+              class="img-fluid" alt="Sample image">
+          </div>
+          <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+            <form>
+              <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                <p class="lead fw-normal mb-0 me-3" style="font-size: 2em;">Register with Arcade</p>
+              </div>
+    
+              <div class="divider d-flex align-items-center my-4"></div>
+    
+              <div class="form-outline mb-4">
+                <input type="text" id="form3Example3" class="form-control form-control-lg"
+                  placeholder="Enter Username" />
+                <label class="form-label" for="form3Example3"></label>
+              </div>
+    
+              <div class="form-outline mb-3">
+                <input type="password" id="form3Example4" class="form-control form-control-lg"
+                  placeholder="Enter Password" />
+                <label class="form-label" for="form3Example4"></label>
+              </div>
+    
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- Checkbox -->
+                <div class="form-check mb-0">
+                  <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
+                  <label class="form-check-label" for="form2Example3" style="font-weight: 500;">Remember me</label>
+                </div>
+                <script>
+                    const ele = document.getElementById('form2Example3');
+                    ele.addEventListener('keypress', (event) => {
+                        if (event.keyCode ===  13) ele.checked = !ele.checked;
+                    })
+                </script>
+                <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="./register.html"
+                    class="link-danger">Login</a></p>
+              </div>
+    
+              <div class="text-center text-lg-start mt-4 pt-2">
+                <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true" id="pw-too-short-toast">
+                    <div class="d-flex">
+                      <div class="toast-body" style="font-weight: 500; color: red;">
+                        Your password must be at least 8 characters long
+                     </div>
+                      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true" id="us-too-long-toast">
+                    <div class="d-flex">
+                      <div class="toast-body" style="font-weight: 500; color: red;">
+                        Your username must be less than 25 characters long
+                     </div>
+                      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true" id="pw-too-long-toast">
+                    <div class="d-flex">
+                      <div class="toast-body" style="font-weight: 500; color: red;">
+                        Your password must be less than 90 characters long
+                     </div>
+                      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true" id="us-taken-toast">
+                    <div class="d-flex">
+                      <div class="toast-body" style="font-weight: 500; color: red;">
+                        Username already taken
+                     </div>
+                      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true" id="op-failed-toast">
+                    <div class="d-flex">
+                      <div class="toast-body" style="font-weight: 500; color: red;">
+                        Something went wrong...
+                     </div>
+                      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                  <style>
+                      .toast {
+                        position: absolute; 
+                        right: 18vh; 
+                        top: 61%;
+                      }
+                  </style>
+                <button id="btn-register" type="button" class="btn btn-primary btn-lg"
+                  style="padding-left: 2.5rem; padding-right: 2.5rem;" enabled>
+                    <span class="spinner-border spinner-border-sm visually-hidden" id="btn-register-spinner" role="status" aria-hidden="true" style="top: 25%"></span>
+                    <span id="btn-register-writing">Register</span>
+                </button>
+                <script>
+                    function endBtnAnimation() {
+                        document.getElementById('btn-register').disabled = false;
+                        document.getElementById('btn-register-spinner').classList.add('visually-hidden')
+                        document.getElementById('btn-register-writing').innerText = 'Register';
+                    }
+
+                    document.getElementById('btn-register').addEventListener('click', () => {
+                        const ele_username = document.getElementById('form3Example3');
+                        const ele_password = document.getElementById('form3Example4')
+                        
+                        const username = ele_username.value;
+                        const password = ele_password.value;
+
+                        if (username.length === 0) {
+                            ele_username.focus();
+                            return;
+                        }
+                        if (password.length === 0) {
+                            ele_password.focus();
+                            return;
+                        }
+                        
+                        if (username.length > 25) {
+                            ele_username.value = "";
+                            const toast = new bootstrap.Toast(document.getElementById('us-too-long-toast'));
+                            ele_username.focus();
+                            toast.show();
+                            return;
+                        }
+
+                        if (password.length < 8) {
+                            ele_password.value = "";
+                            const toast = new bootstrap.Toast(document.getElementById('pw-too-short-toast'));
+                            ele_password.focus();
+                            toast.show();
+                            return;
+                        }
+
+                        if (password.length > 90) {
+                            ele_password = "";
+                            const toast = new bootstrap.Toast(document.getElementById('pw-too-long-toast'));
+                            ele_password.focus();
+                            toast.show()
+                            return;
+                        }
+
+                        document.getElementById('btn-register').disabled = true;
+                        document.getElementById('btn-register-spinner').classList.remove('visually-hidden')
+                        document.getElementById('btn-register-writing').innerText = "Signing Up...";
+
+                        // check availability
+                        fetch(`https://arcadeapp.fireapis.com/userdata/?page=1&page_size=1&username=${username}`, {
+                            method: 'GET',
+                            headers: {
+                                'X-API-ID': 466,
+                                'X-CLIENT-TOKEN': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcGlfa2V5IjoiMDAxYTJmMGItMTY0ZC00MjMzLWIzYTYtNmMzZTYwMTE2ODgzIiwidGVuYW50X2lkIjo1NzgsImp0aV9rZXkiOiJmNTMzNmRmNC1kZjJlLTExZWMtYjM0MS0wYTU4YTlmZWFjMDIifQ.6O3zIDWftxMQ_t0r56W6Gf67eDQjEXBabAaHRLEHBy8',
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then((response) => {
+                                if (response.ok)
+                                    return response.json()
+                                else throw response;
+                            })
+                            .then((response) => {
+                                setTimeout(() => {
+                                    const total_count = response.total_count;
+                                    if (total_count === 1) {
+                                        ele_username.value = "";
+                                        const toast = new bootstrap.Toast(document.getElementById('us-taken-toast'));
+                                        ele_username.focus();
+                                        toast.show();
+
+                                        endBtnAnimation();
+                                        return;
+                                    }
+
+                                    // create account
+                                    fetch(`https://arcadeapp.fireapis.com/userdata`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-API-ID': 466,
+                                            'X-CLIENT-TOKEN': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcGlfa2V5IjoiMDAxYTJmMGItMTY0ZC00MjMzLWIzYTYtNmMzZTYwMTE2ODgzIiwidGVuYW50X2lkIjo1NzgsImp0aV9rZXkiOiJmNTMzNmRmNC1kZjJlLTExZWMtYjM0MS0wYTU4YTlmZWFjMDIifQ.6O3zIDWftxMQ_t0r56W6Gf67eDQjEXBabAaHRLEHBy8',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            username,
+                                            password,
+                                            balance: 375
+                                        })
+                                    })
+                                        .then((response) => {
+                                            if (response.ok)
+                                                return response.json()
+                                            else throw response;
+                                        })
+                                        .then((response) => {
+                                            window.localStorage.setItem('userdata', JSON.stringify(response));
+                                            endBtnAnimation();
+                                            if (document.getElementById('form2Example3').checked)
+                                                window.localStorage.setItem('userauth', JSON.stringify({username, password}));
+                                            document.location.href = 'me.html';
+                                        })
+                                        .catch((err) => {
+                                            new bootstrap.Toast(document.getElementById('op-failed-toast')).show();
+                                            endBtnAnimation();
+                                        });
+                                }, 750);
+                            })
+                            .catch((err) => {
+                                new bootstrap.Toast(document.getElementById('op-failed-toast')).show();
+                                endBtnAnimation();
+                            });
+                    });
+                </script>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div
+        class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+        <!-- Copyright -->
+        <div class="text-white mb-3 mb-md-0">
+          Copyright © 2022. All rights reserved.
+        </div>
+      </div>
+    </section>
+    
+    <style>
+      section {border: 1px solid black;}
+      .divider:after,
+      .divider:before {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+      }
+      .h-custom {
+        height: calc(100% - 73px);
+      }
+      @media (max-width: 450px) {
+        .h-custom {
+          height: 100%;
+        }
+      }
+    </style>
+  </body>
+</html>
