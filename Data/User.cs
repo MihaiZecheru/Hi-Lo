@@ -34,7 +34,17 @@ namespace Arcade
         }
 
         /// <summary>
-        /// Prints the <see cref="User"/> to the console as a formatted string-JSON element 
+        /// Packages the user into a formatted string-JSON element
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            string s = "   ";
+            return $"{{\n{s}\"id\": {this.id}\n{s}\"username\": \"{this.name}\"\n{s}\"password\": \"{this.password}\"\n{s}\"balance\": {this.balance}\n}}";
+        }
+
+        /// <summary>
+        /// Prints the <see cref="User"/> to the console as a formatted string-JSON element with syntax highlighting
         /// </summary>
         public void Print()
         {
@@ -48,7 +58,7 @@ namespace Arcade
             Console.Write($"\"\n{s}\"password\": \""); Arcade.ConsoleColors.Set("magenta");
             Console.Write(this.password);              Arcade.ConsoleColors.Set("cyan");
             Console.Write($"\"\n{s}\"balance\": ");    Arcade.ConsoleColors.Set("magenta");
-            Console.Write($"${this.balance}");               Arcade.ConsoleColors.Set("cyan");
+            Console.Write($"${this.balance}");         Arcade.ConsoleColors.Set("cyan");
             Console.WriteLine("\n}");
         }
 
@@ -118,15 +128,7 @@ namespace Arcade
                     }
                     first = false;
 
-                    Arcade.ConsoleColors.Set("cyan"); Console.WriteLine($"{dl}\n\n{space}Sign In");
-
-                    Arcade.ConsoleColors.Set("cyan"); Console.Write($"\n{dl}\n\nUsername: ");
-                    Arcade.ConsoleColors.Set("magenta");
-                    string username = Console.ReadLine().Trim(' ');
-
-                    Arcade.ConsoleColors.Set("cyan"); Console.Write("Password: ");
-                    Arcade.ConsoleColors.Set("magenta");
-                    string password = Console.ReadLine().Trim(' ');
+                    (string username, string password) = GetUsernameAndPassword(space);
 
                     Console.Write("\n");
 
@@ -159,125 +161,424 @@ namespace Arcade
             }
             else // option == 2
             {
-                bool first = true;
-                string username;
-                string password;
-                string confirm_password;
-                while (true)
-                {
-                    Arcade.ConsoleColors.Set("cyan");
-                    if (!first)
-                    {
-                        Thread.Sleep(1000);
-                        Console.Clear();
-                    }
-
-                    first = false;
-                    Console.WriteLine($"{dl}\n\n{space}Sign Up\n");
-                    Console.Write($"{dl}\n\nCreate Your Username: ");
-                    Arcade.ConsoleColors.Set("magenta");
-                    username = Console.ReadLine().Trim(' ');
-
-                    ConsoleKey response;
-                    while (true)
-                    {
-                        Console.Clear(); Arcade.ConsoleColors.Set("cyan");
-
-                        // rewriting the prompt and the response to the screen after clearing the console
-                        Console.WriteLine($"{dl}\n\n{space}Sign Up\n");
-                        Console.Write($"{dl}\n\nCreate Your Username: ");
-                        Arcade.ConsoleColors.Set("magenta");
-                        Console.WriteLine(username);
-
-                        Arcade.ConsoleColors.Set("cyan");
-                        Console.Write($"\n{dl}\n\nDo you want to choose a different username? (y/n): ");
-                        Arcade.ConsoleColors.Set("magenta");
-                        response = Console.ReadKey().Key;
-                        if (response == ConsoleKey.Y || response == ConsoleKey.N)
-                            break;
-                    }
-
-                    if (response == ConsoleKey.Y)
-                    {
-                        first = true;
-                        Console.Clear();
-                        continue;
-                    }
-
-                    Console.Write("\n\n");
-                    DotAnimation dotAnimation = new DotAnimation(message: "Checking Username Availability", messageConsoleColor: "cyan");
-                    bool available = await Backend.CheckUsernameAvailability(username);
-                    if (!available)
-                    {
-                        Thread.Sleep(500);
-                        dotAnimation.End(endMessage: "Not Available", endMessageConsoleColor: "darkred");
-                        Console.WriteLine($"\n{dl}\n");
-                        Thread.Sleep(500);
-                        continue;
-                    }
-                    else
-                    {
-                        Thread.Sleep(500);
-                        dotAnimation.End(endMessage: "Available", endMessageConsoleColor: "magenta");
-                        Console.WriteLine($"\n{dl}\n");
-                        Thread.Sleep(500);
-                    }
-
-                    Arcade.ConsoleColors.Set("cyan");
-                    first = true;
-                    Thread.Sleep(1000);
-                    Console.Clear();
-
-                    while (true)
-                    {
-
-                        if (!first)
-                        {
-                            Thread.Sleep(1000);
-                            Console.Clear();
-                        }
-
-                        first = false;
-
-                        Console.WriteLine($"{dl}\n\n{space}Sign Up\n");
-                        Arcade.ConsoleColors.Set("cyan");
-                        Console.Write($"{dl}\n\nCreate Your Password: ");
-                        Arcade.ConsoleColors.Set("magenta");
-                        password = Console.ReadLine().Trim(' ');
-
-                        Arcade.ConsoleColors.Set("cyan");
-                        Console.Write("\nConfirm Your Password: ");
-                        Arcade.ConsoleColors.Set("magenta");
-                        confirm_password = Console.ReadLine().Trim(' ');
-                        Arcade.ConsoleColors.Set("cyan");
-
-                        string error = "";
-                        if (password != confirm_password)
-                            error = "Passwords must match";
-                        else if (password == "")
-                            error = "Your password cannot be \"\"";
-                        else if (password.Length < 8)
-                            error = "Your password must be 8 characters or longer";
-
-                        if (error != "")
-                        {
-                            Console.Write($"{dl}\n\n");
-                            Arcade.ConsoleColors.Set("darkred");
-                            Console.Write(error);
-                            Arcade.ConsoleColors.Set("cyan");
-                            Console.Write($"\n\n{dl}\n\n");
-                        }
-
-                        if (password == confirm_password && password.Length >= 8 && password != "") break;
-                    }
-                    break;
-                }
-                Console.WriteLine($"\n{dl}\n");
-
-                ConsoleColors.Reset();
+                (string username, string password) = await CreateUsernameAndPassword(space);
+                
                 User user = await Arcade.Backend.CreateUser(username, password, 375);
                 return user;
             }
+        }
+
+        /// <summary>
+        /// Prompt user to enter their username and password
+        /// </summary>
+        /// <param name="space">Distance from <see cref="Console.CursorLeft"/> (centers the title)</param>
+        /// <returns><see cref="Tuple{T1, T2}"/> T1 = username, T2 = password</returns>
+        private static Tuple<string, string> GetUsernameAndPassword(string space)
+        {
+            string baseScreen = $"{dl}\n\n{space}Sign In\n\n{ dl}\n\nUsername: \n\nPassword: \n\n{dl}";
+            Arcade.ConsoleColors.Set("cyan");
+            Console.WriteLine(baseScreen);
+            Console.SetCursorPosition(10, 6);
+            Arcade.ConsoleColors.Set("magenta");
+
+            // 0 is the username field, 1 is the password field
+            int loc = 0;
+
+            // vertical, horizontal
+            int vt, hz;
+
+            // username line length, password line length
+            int ul = 0, pl = 0;
+
+            List<char> username = new List<char>(), password = new List<char>();
+
+            while (true)
+            {
+                ConsoleKeyInfo Key = Console.ReadKey();
+                if (loc == 0) username.Add(Key.KeyChar);
+                else password.Add(Key.KeyChar);
+
+                ConsoleKey key = Key.Key;
+
+                (hz, vt) = Console.GetCursorPosition();
+
+                if (key == ConsoleKey.Enter && loc == 1)
+                {
+                    if (ul > 0 && pl > 0)
+                        break;
+                    else if (ul <= 0)
+                    {
+                        Console.SetCursorPosition(10, 6);
+                        loc = 0;
+                        continue;
+                    }
+                    else
+                        Console.SetCursorPosition(10, 8);
+                }
+
+                switch (key)
+                {
+                    case ConsoleKey.Spacebar:
+                        if (hz >= (10 + (loc == 0 ? ul : pl)))
+                        {
+                            Console.SetCursorPosition(hz - 1, vt);
+                            Console.Write("");
+                        }
+                        break;
+
+                    case ConsoleKey.UpArrow:
+                        // can only move up when the user is on the password field
+                        if (loc != 1)
+                            break;
+
+                        Console.SetCursorPosition(10 + ul, vt - 2);
+                        loc = 0;
+                        break;
+
+                    case ConsoleKey.Enter:
+                    case ConsoleKey.DownArrow:
+                        // can only move down when the user is on the username field
+                        if (loc != 0)
+                            break;
+
+                        Console.SetCursorPosition(10 + pl, vt + 2);
+                        loc = 1;
+                        break;
+
+                    case ConsoleKey.LeftArrow:
+                        if (hz == 10)
+                            break;
+
+                        Console.SetCursorPosition(hz - 1, vt);
+                        break;
+
+                    case ConsoleKey.RightArrow:
+                        if (hz == 10 + (loc == 0 ? ul : pl))
+                            break;
+
+                        Console.SetCursorPosition(hz + 1, vt);
+                        break;
+
+                    case ConsoleKey.Backspace:
+                        Console.SetCursorPosition(10, vt);
+                        for (int i = 0; i < (loc == 0 ? ul : pl); i++)
+                            Console.Write(" ");
+
+                        if (loc == 0)
+                        {
+                            username.Clear();
+                            ul = 0;
+                        }
+                        else
+                        {
+                            password.Clear();
+                            pl = 0;
+                        }
+
+                        Console.SetCursorPosition(10, vt);
+                        break;
+
+                    case ConsoleKey.End:
+                        Console.SetCursorPosition(10 + (loc == 0 ? ul : pl), vt);
+                        break;
+
+                    // count chars on each line
+                    default:
+                        if (Console.GetCursorPosition().Left <= (10 + (loc == 0 ? ul : pl))) break;
+
+                        if (loc == 0) ul++;
+                        else pl++;
+                        break;
+                }
+            }
+
+            // username, password
+            string u = "", p = "";
+            for (int i = 0; i < username.Count; i++)
+            {
+                if ((int)username[i] != 13)
+                    u += username[i];
+            }
+            for (int i = 0; i < password.Count; i++)
+            {
+                if ((int)password[i] != 13)
+                    p += password[i];
+            }
+
+            Arcade.ConsoleColors.Set("cyan");
+            Console.SetCursorPosition(0, vt + 3);
+            return new Tuple<string, string>(u.Trim(' '), p.Trim(' '));
+        }
+
+        /// <summary>
+        /// Prompt user to create a username and password
+        /// </summary>
+        /// <param name="space">Distance from <see cref="Console.CursorLeft"/> (centers the title)</param>
+        /// <returns><see cref="Tuple{T1, T2}"/> T1 = username, T2 = password</returns>
+        private static async Task<Tuple<string, string>> CreateUsernameAndPassword(string space)
+        {
+            string baseScreen = $"{dl}\n\n{space}Sign Up\n\n{dl}\n\nCreate Your Username: \n\nCreate Your Password: \n\nConfirm Your Password: \n\n{dl}\n";
+
+            // 0 is the username field, 1 is the password field, 2 is the confirm password field
+            int loc = 0;
+
+            // vertical, horizontal
+            int vt, hz;
+
+            // username line length, password line length
+            int ul = 0, pl = 0, cpl = 0;
+
+            // username, password, confirm password
+            List<char> username = new List<char>(), password = new List<char>(), cpassword = new List<char>();
+            string u = "", p = "", cp = "";
+
+            bool clearUsernameField = false, clearPasswordField = false;
+
+            while (true) 
+            {
+                // reset screen
+                Console.Clear();
+                Arcade.ConsoleColors.Set("cyan");
+                Console.WriteLine(baseScreen);
+                Console.SetCursorPosition(22, 6);
+                Arcade.ConsoleColors.Set("magenta");
+
+                // clear variables and populate fields with values from previous iterations
+                if (!clearUsernameField)
+                {
+                    Console.SetCursorPosition(22, 6);
+                    Console.Write(u);
+
+                    // set to empty password field
+                    Console.SetCursorPosition(22, 8);
+                    loc = 1;
+                }
+                else
+                {
+                    u = "";
+                    ul = 0;
+                    username.Clear();
+                }
+
+                if (!clearPasswordField)
+                {
+                    Console.SetCursorPosition(22, 8);
+                    Console.Write(p);
+                    Console.SetCursorPosition(23, 10);
+                    Console.Write(cp);
+
+                    // set to empty username field
+                    Console.SetCursorPosition(22, 6);
+                    loc = 0;
+                }
+                else
+                {
+                    p = "";
+                    cp = "";
+                    pl = 0;
+                    cpl = 0;
+                    password.Clear();
+                    cpassword.Clear();
+                }
+
+                clearUsernameField = false; clearPasswordField = false;
+
+                while (true)
+                {
+                    ConsoleKeyInfo Key = Console.ReadKey();
+                    char kc = Key.KeyChar;
+                
+                    if (loc == 0) username.Add(kc);
+                    else if (loc == 1) password.Add(kc);
+                    else cpassword.Add(kc);
+
+                    ConsoleKey key = Key.Key;
+
+                    (hz, vt) = Console.GetCursorPosition();
+
+                    if (key == ConsoleKey.Enter && loc == 2)
+                    {
+                        if (ul > 0 && pl > 0 && cpl > 0)
+                            break;
+                        else if (ul <= 0)
+                        {
+                            Console.SetCursorPosition(22, 6);
+                            loc = 0;
+                            continue;
+                        }
+                        else if (pl <= 0)
+                        {
+                            Console.SetCursorPosition(22, 8);
+                            loc = 1;
+                            continue;
+                        }
+                        else
+                            Console.SetCursorPosition(23, 10);
+                    }
+
+                    switch (key)
+                    {
+                        case ConsoleKey.Spacebar:
+                            if (hz >= (22 + (loc == 0 ? ul : loc == 1 ? pl : cpl)))
+                            {
+                                Console.SetCursorPosition(hz - 1, vt);
+                                Console.Write("");
+                            }
+                            break;
+
+                        case ConsoleKey.UpArrow:
+                            // can only move up when the user is on the password field
+                            if (loc == 0)
+                                break;
+                            else if (loc == 1)
+                                Console.SetCursorPosition(22 + ul, vt - 2);
+                            else
+                                Console.SetCursorPosition(22 + pl, vt - 2);
+                            loc -= 1;
+                            break;
+
+                        case ConsoleKey.Enter:
+                        case ConsoleKey.DownArrow:
+                            // can only move down when the user is on the username field
+                            if (loc == 2)
+                                break;
+                            else if (loc == 1)
+                                Console.SetCursorPosition(23 + cpl, vt + 2);
+                            else
+                                Console.SetCursorPosition(22 + pl, vt + 2);
+                            loc += 1;
+                            break;
+
+                        case ConsoleKey.LeftArrow:
+                            if (loc == 2 && hz == 23) break;
+                            else if (loc != 2 && hz == 22) break;
+
+                            Console.SetCursorPosition(hz - 1, vt);
+                            break;
+
+                        case ConsoleKey.RightArrow:
+                            if (loc == 0)
+                            {
+                                if (hz == 22 + ul) break;
+                            }
+                            else if (loc == 1)
+                            {
+                                if (hz == 22 + pl) break;
+                            }
+                            else
+                            {
+                                if (hz == 23 + cpl) break;
+                            }
+
+                            Console.SetCursorPosition(hz + 1, vt);
+                            break;
+
+                        case ConsoleKey.Backspace:
+                            Console.SetCursorPosition(22 + (loc == 2 ? 1 : 0), vt);
+                            for (int i = 0; i < (loc == 0 ? ul : loc == 1 ? pl : cpl); i++)
+                                Console.Write(" ");
+
+                            if (loc == 0)
+                            {
+                                username.Clear();
+                                ul = 0;
+                            }
+                            else if (loc == 1)
+                            {
+                                password.Clear();
+                                pl = 0;
+                            }
+                            else
+                            {
+                                cpassword.Clear();
+                                cpl = 0;
+                            }
+
+                            Console.SetCursorPosition(22 + (loc == 2 ? 1 : 0), vt);
+                            break;
+
+                        case ConsoleKey.End:
+                            Console.SetCursorPosition(22 + (loc == 2 ? 1 : 0) + (loc == 0 ? ul : loc == 1 ? pl : cpl), vt);
+                            break;
+
+                        case ConsoleKey.Home:
+                            Console.SetCursorPosition(22 + (loc == 2 ? 1 : 0), vt);
+                            break;
+
+                        // count chars on each line
+                        default: // todo for both this function and the GetUsernameAndPassword function, make it so the user can't type more than 32 chars for any field; can be done by modifying the default case below
+                            if (Console.GetCursorPosition().Left <= (22 + (loc == 2 ? 1 : 0) + (loc == 0 ? ul : loc == 1 ? pl : cpl))) break;
+                            if (loc == 0) ul++;
+                            else if (loc == 1) pl++;
+                            else cpl++;
+                            break;
+                    }
+                }
+
+                u = ""; p = ""; cp = "";
+                for (int i = 0; i < username.Count; i++)
+                {
+                    if ((int)username[i] != 13)
+                        u += username[i];
+                }
+                for (int i = 0; i < password.Count; i++)
+                {
+                    if ((int)password[i] != 13)
+                        p += password[i];
+                }
+                for (int i = 0; i < cpassword.Count; i++)
+                {
+                    if ((int)cpassword[i] != 13)
+                        cp += cpassword[i];
+                }
+
+                Console.SetCursorPosition(0, vt + 4);
+
+                /* check password */
+
+                string error = "";
+                if (p != cp)
+                    error = "Passwords must match";
+                else if (p.Length < 8)
+                    error = "Your password must be 8 characters or longer";
+
+                if (error != "")
+                {
+                    Arcade.ConsoleColors.Set("darkred");
+                    Console.Write(error);
+                    Arcade.ConsoleColors.Set("cyan");
+                    Console.Write($"\n\n{dl}\n\n");
+
+                    clearPasswordField = true;
+                    Thread.Sleep(1000);
+                    continue;
+                }
+
+                /* check username */
+
+                DotAnimation dotAnimation = new DotAnimation(message: "Checking Username Availability", messageConsoleColor: "cyan");
+                bool available = await Backend.CheckUsernameAvailability(u);
+                if (!available)
+                {
+                    Thread.Sleep(500);
+                    dotAnimation.End(endMessage: "Not Available", endMessageConsoleColor: "darkred");
+                    Console.WriteLine($"\n{dl}\n");
+                    Thread.Sleep(500);
+
+                    clearUsernameField = true;
+                    continue;
+                }
+                else
+                {
+                    Thread.Sleep(500);
+                    dotAnimation.End(endMessage: "Available", endMessageConsoleColor: "magenta");
+                    Console.WriteLine($"\n{dl}\n");
+                    Thread.Sleep(500);
+
+                    break;
+                }
+            }
+            return new Tuple<string, string>(u.Trim(' '), p.Trim(' '));
         }
 
         /// <summary>
@@ -308,16 +609,18 @@ namespace Arcade
                 Arcade.ConsoleColors.Set("cyan");
                 Console.WriteLine(dl + "\n");
                 
-                Console.Write("You must either ");                                     Arcade.ConsoleColors.Set("magenta");
-                Console.Write("SIGN IN ");                                             Arcade.ConsoleColors.Set("cyan");
-                Console.Write("or ");                                                  Arcade.ConsoleColors.Set("magenta");
-                Console.Write("SIGN UP ");                                             Arcade.ConsoleColors.Set("cyan");
-                Console.Write("to play this game!\n\nType ");                          Arcade.ConsoleColors.Set("magenta");
-                Console.Write("1 ");                                                   Arcade.ConsoleColors.Set("cyan");
+                Console.Write("You must either ");                                             Arcade.ConsoleColors.Set("magenta");
+                Console.Write("SIGN IN ");                                                     Arcade.ConsoleColors.Set("cyan");
+                Console.Write("or ");                                                          Arcade.ConsoleColors.Set("magenta");
+                Console.Write("SIGN UP ");                                                     Arcade.ConsoleColors.Set("cyan");
+                Console.Write("to play this game!\n\nType ");                                  Arcade.ConsoleColors.Set("magenta");
+                Console.Write("1 ");                                                           Arcade.ConsoleColors.Set("cyan");
                 Console.WriteLine("to Sign-In to an already existing account.");
-                Console.Write("Type ");                                                Arcade.ConsoleColors.Set("magenta");
-                Console.Write("2 ");                                                   Arcade.ConsoleColors.Set("cyan");
-                Console.Write("to Sign-Up for an Arcade account. Choose an option: "); Arcade.ConsoleColors.Set("magenta");
+                Console.Write("Type ");                                                        Arcade.ConsoleColors.Set("magenta");
+                Console.Write("2 ");                                                           Arcade.ConsoleColors.Set("cyan");
+                Console.Write($"to Sign-Up for an Arcade account. Choose an option:\n\n{dl}"); Arcade.ConsoleColors.Set("magenta");
+
+                Console.SetCursorPosition(59, 5);
 
                 ConsoleKey response = Console.ReadKey().Key;
                 if (response == ConsoleKey.D1)
@@ -356,17 +659,22 @@ namespace Arcade
             {
                 string error;
                 ConsoleColors.Set("cyan"); 
+                
                 if (!first)
                     Thread.Sleep(1000); Console.Clear();
+
                 first = false;
                 Console.WriteLine($"{dl}\n\n{s}Place Your Bet!\n\n{dl}\n");
 
                 Console.Write("Your current balance is: "); Arcade.ConsoleColors.Set("magenta");
                 Console.WriteLine($"${this.balance}"); Arcade.ConsoleColors.Set("cyan");
-                Console.Write($"Place Your Bet: "); Arcade.ConsoleColors.Set("magenta");
+                Console.Write($"Place Your Bet: \n\n{dl}"); Arcade.ConsoleColors.Set("magenta");
+                Console.SetCursorPosition(16, 7);
                 string response = Console.ReadLine().Trim(' ').ToLower();
+
                 while (response.Contains("$"))
                     response = response.Replace("$", "");
+
                 bool valid = int.TryParse(response, out bet);
                 if (valid)
                 {
@@ -374,7 +682,7 @@ namespace Arcade
                     {
                         error = "You can't afford this bet!";
                     }
-                    else if (bet == 0)
+                    else if (bet <= 0)
                     {
                         error = "Your bet must be greater than $0!";
                     }
