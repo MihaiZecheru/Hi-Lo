@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Hi-Lo": {
+      "commandName": "Project",
+      "hotReloadEnabled": false
+    }
+  }
+}
