@@ -248,8 +248,17 @@ namespace Arcade
             else
                 phrase += ">.<";
 
-            Console.Write($"{phrase}\n\nPlay again for ${bet}? (y/n): ");
-            return ConsoleKey.Y == Console.ReadKey().Key;
+            if (userBalance - bet >= 0)
+            {   
+                Console.Write($"{phrase}\n\nPlay again for ${bet}? (y/n): ");
+                return ConsoleKey.Y == Console.ReadKey().Key;
+            }
+            else
+            {
+                Console.Write($"{phrase}\n\nYou don't have enough money to play again with a bet of ${bet} (you have ${userBalance}). Press any key to quit");
+                Console.ReadKey();
+                return false;
+            }
         }
     }
 }
