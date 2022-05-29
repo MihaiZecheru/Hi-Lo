@@ -25,8 +25,7 @@
                 bool continueGame = StartGame(user, bet);
                 
                 if (!continueGame) break;
-                else
-                    user.RemoveBalance(bet);
+                else user.RemoveBalance(bet);
             }
 
             ConsoleColors.Set("cyan");
@@ -100,24 +99,19 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
                     if (new string[] { "higher", "lower", "less", "more", "low", "high", "lo", "hi", "l", "h" }.Contains(response)) break;
                 }
 
-                int previousCardValue = card.Value;
-
-                card = new Card(not: previousCardValue);
+                Card previousCard = card;
+                card = new Card(not: previousCard.Value);
 
                 // Display next card
                 Console.Clear();
-                Console.WriteLine($"{dl}\n\n\n\n\n\n\n\n\n\n\n\n{dl}\n");
-                Arcade.DotAnimation dotAnimation = new Arcade.DotAnimation(message: "\t\t\t\t\t\t The next card is", messageConsoleColor: "cyan", endMessageConsoleColor: "magenta", endMessage: "");
+                Console.WriteLine($"{dl}\n\n{previousCard.Model}\n{dl}\n");
+                Arcade.DotAnimation dotAnimation = new Arcade.DotAnimation(message: "\t\t\t\t\t\t   The next card is", messageConsoleColor: "cyan", endMessageConsoleColor: "magenta", endMessage: "");
                 Thread.Sleep(2000);
                 dotAnimation.End();
                 Console.Clear();
-                Console.WriteLine($"{dl}\n\n{card.Model}\n{dl}\n");
-                Console.Write("\t\t\t\t\t\t The next card is: ");
-                Arcade.ConsoleColors.Set("magenta");
-                Console.WriteLine($"{card.Name}\n");
 
                 // LOWER
-                if (card.Value < previousCardValue)
+                if (card.Value < previousCard.Value)
                 {
                     // check if user was right
                     if (new string[] { "lower", "less", "low", "lo", "l" }.Contains(response))
@@ -138,10 +132,19 @@ Face cards hold face value, Ace = 1, Jack = 12, Queen = 13, King = 14" + "\n";
                         won = false;
                 }
 
+                Console.WriteLine($"{dl}\n");
+                Arcade.ConsoleColors.Set(won ? "green" : "red");
+                Console.WriteLine(card.Model);
+                Arcade.ConsoleColors.Set("cyan");
+                Console.WriteLine($"{dl}\n");
+                Console.Write("\t\t\t\t\t\t The next card is: ");
+                Arcade.ConsoleColors.Set("magenta");
+                Console.WriteLine($"{card.Name}\n");
+
                 Console.Write(!won ? "\t\t\t\t\t\t      " : i != 2 ? "\t\t\t\t\t" : "\t\t\t\t\t\t ");
                 if (won)
                 {
-                    Arcade.ConsoleColors.Set("green");
+                    Arcade.ConsoleColors.Set("darkgreen");
                     Console.Write(" YOU WIN!!! ");
                     Arcade.ConsoleColors.Set("cyan");
                     if (i != 2)
