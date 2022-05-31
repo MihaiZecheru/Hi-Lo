@@ -1,9 +1,9 @@
 Arcade
 ----------
 
-Arcade Console Application and Discord Bot. Plently of small arcade-style games to play, with all data hosted online.
+Arcade Console Application, Website, and Discord Bot. Plently of small arcade-style games to play, with all data hosted online.
 
-Leaderboard
+Website
 -------
 
 https://arcade.mzecheru.com
